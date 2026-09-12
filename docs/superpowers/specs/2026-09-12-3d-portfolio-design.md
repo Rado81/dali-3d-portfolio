@@ -128,7 +128,7 @@ The 12 projects, in ring order:
 | 11 | The Drama of the Drama | Narrative | UBm5xIfvasM |
 | 12 | DJI Phantom 3 | Aerial | ZrbmiU2OCr0 |
 
-Thumbnails are fetched at runtime from `https://img.youtube.com/vi/<id>/maxresdefault.jpg`, falling back to `hqdefault.jpg` on error, then to a dark placeholder plane showing the title. No thumbnail images are stored in the repo.
+Thumbnails are fetched at runtime from `https://img.youtube.com/vi/<id>/maxresdefault.jpg` (desktop) or `sddefault.jpg` (mobile), falling back to `hqdefault.jpg` on error, then to a dark placeholder plane showing the title. `sddefault` and `hqdefault` are 4:3 letterboxed, so any texture whose measured aspect is under 1.7 is cropped to 16:9 via `repeat`/`offset`. No thumbnail images are stored in the repo.
 
 Adding a piece: append one entry to `projects.ts`, push. Adding a post: add one `.md` file under `content/journal/`, push.
 
@@ -199,21 +199,21 @@ Layout (`layout.ts`, pure):
 
 Visuals per tile:
 
-- Base: thumbnail texture, `MeshBasicMaterial`, slight emissive lift so the far side is not black, colour tint 0.75 when not focused.
+- Base: thumbnail texture on `MeshBasicMaterial`, colour tint 0.75 when not focused.
 - Focused: scale 1.25, tint 1.0, gold edge (a thin plane behind the tile, 2% larger, gold colour), bloom picks it up.
 - Hovered (desktop): scale 1.08, tint 0.9, cursor pointer.
 - Transitions via react-spring, 300 ms, tension 170, friction 26.
 
 Stage:
 
-- Background `#050505`. Fog `#050505` from radius 4 to 9 so the far side of the ring fades.
-- Ambient light 0.6 plus one point light at the origin, warm gold `#D4AF37` at 0.4, so focused tiles read warmer.
+- Background `#050505`. Fog `#050505` from 7 to 14 units: in browse every tile sits 6 units from the camera and is unfogged; from the intro camera the far wall of the ring (10 to 13.5 units away) fades with distance.
+- Tiles use an unlit `MeshBasicMaterial` (map times a tint colour), so the tint values below are exact and no scene lights are needed. The gold edge plane is gold scaled by 1.5 (an HDR value) so bloom picks it up.
 - Post-processing: bloom (threshold 0.85, intensity 0.6). In `intro` and `panel` modes, a CSS `filter: blur(6px)` on the canvas element and tile tint dropped to 0.45.
 - Film grain is an HTML overlay (SVG turbulence, opacity 0.4, overlay blend), not a shader pass.
 
 Camera:
 
-- Intro pose: position (0, 1.2, 7.5), looking at (0, 0, 0). The ring fills the lower two thirds of the frame behind the title card.
+- Intro pose: position (0, 1.2, 7.5), looking at (0, 0, 0). Tiles are single-sided and face the ring centre, so from outside the near half is culled and the far wall of the ring is visible as a band behind the title card, fading with distance.
 - Browse pose: position (0, 0, 0), looking along the current focus direction.
 - `enter()` springs the camera between poses over 1.2 s (tension 120, friction 30). Nav and caption fade in during the last 400 ms.
 - Idle rotation: 0.05 rad/s in intro and panel modes, 0 in browse.
