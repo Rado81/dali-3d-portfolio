@@ -67,3 +67,59 @@
 @media (max-width: 767px) { .caption { bottom: 24px; gap: 16px; } .caption__title { font-size: 22px; } }
 
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* Panel */
+.scrim { position: fixed; inset: 0; z-index: 5; background: rgba(0, 0, 0, 0.6); animation: fade-in 0.3s; }
+.panel {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 6;
+  width: min(520px, 100vw);
+  background: rgba(10, 10, 10, 0.96);
+  border-left: 1px solid var(--gold-subtle);
+  padding: 88px 40px 48px;
+  overflow-y: auto;
+  animation: slide-in 0.4s var(--ease-out);
+}
+@keyframes slide-in { from { transform: translateX(100%); } to { transform: translateX(0); } }
+.panel__close { position: absolute; top: 20px; right: 24px; font-size: 28px; line-height: 1; color: var(--text-muted); transition: color 0.25s; }
+.panel__close:hover { color: var(--text-primary); }
+.panel__title { font-size: 40px; margin-bottom: 24px; }
+.panel__body { font-size: 15px; line-height: 1.7; color: var(--text-secondary); }
+.panel__body p { margin: 0 0 16px; }
+.panel__lead { color: var(--text-primary); font-size: 17px; }
+.panel__photo { width: 120px; height: 120px; object-fit: cover; border-radius: 2px; border: 1px solid var(--gold-subtle); margin-bottom: 24px; display: block; }
+.panel__section { margin: 32px 0 12px; color: var(--gold); }
+.panel__kicker { margin-bottom: 20px; color: var(--gold); }
+.plain { list-style: none; margin: 0; padding: 0; }
+.timeline, .process { list-style: none; margin: 0; padding: 0; }
+.timeline li, .process li, .plain li { display: grid; grid-template-columns: 56px 1fr; gap: 2px 16px; padding: 10px 0; border-bottom: 1px solid var(--text-subtle); }
+.timeline li strong, .process li strong, .plain li strong { color: var(--text-primary); font-weight: 500; }
+.timeline li span:last-child, .process li span:last-child, .plain li span:last-child { grid-column: 2; }
+.timeline__year { grid-row: span 2; color: var(--gold); font-family: var(--font-display); letter-spacing: var(--tracking-wide); font-size: 18px; }
+.chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.chips li { font-size: 11px; letter-spacing: var(--tracking-wide); text-transform: uppercase; border: 1px solid var(--text-subtle); padding: 6px 10px; border-radius: 2px; }
+.quote { margin: 0 0 20px; padding-left: 16px; border-left: 2px solid var(--gold); font-style: italic; }
+.quote footer { font-style: normal; font-size: 13px; }
+.quote footer strong { color: var(--text-primary); font-weight: 500; }
+.service { margin-bottom: 24px; }
+.service__title { font-size: 26px; margin-bottom: 6px; color: var(--text-primary); }
+.posts__item { display: block; padding: 16px 0; }
+.posts__link { display: block; font-family: var(--font-display); font-size: 24px; letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--text-primary); text-decoration: none; margin: 4px 0 8px; }
+.posts__link:hover { color: var(--gold); }
+.posts__excerpt { color: var(--text-secondary); }
+.post__back { display: inline-block; margin-bottom: 16px; text-decoration: none; }
+.post__back:hover { color: var(--gold); }
+.post__title { font-size: 32px; margin-bottom: 8px; color: var(--text-primary); }
+.post__body h3 { font-family: var(--font-display); letter-spacing: var(--tracking-wide); font-size: 22px; color: var(--text-primary); margin: 28px 0 8px; }
+.post__body a { color: var(--gold); }
+.contact__email { display: block; text-align: center; margin-bottom: 28px; font-size: 12px; }
+.contact__list li { grid-template-columns: 100px 1fr; }
+.contact__list a { text-decoration: none; color: var(--text-primary); }
+.contact__list a:hover { color: var(--gold); }
+.contact__availability { display: inline-flex; align-items: center; gap: 8px; }
+.contact__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.contact__social { display: flex; gap: 20px; }
+.contact__social li { display: block; padding: 0; border: 0; }
+.contact__social a { text-decoration: none; color: var(--text-secondary); }
+.contact__social a:hover { color: var(--gold); }
+@media (max-width: 767px) { .panel { padding: 76px 24px 40px; } .panel__title { font-size: 32px; } }

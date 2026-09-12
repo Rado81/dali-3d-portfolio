@@ -3,6 +3,7 @@ import { Intro } from "./Intro";
 import { Nav } from "./Nav";
 import { Filter } from "./Filter";
 import { Caption } from "./Caption";
+import { Panel } from "./Panel";
 import "./overlay.css";
 
 export function Overlay() {
@@ -19,6 +20,7 @@ export function Overlay() {
           <Caption />
         </>
       )}
+      {mode === "panel" && <Panel />}
     </>
   );
 }
