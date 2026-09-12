@@ -22,11 +22,11 @@ The site replaces nothing yet. It is a new project in a new repository, deployed
 
 | Concern | Choice |
 |---|---|
-| Build | Vite 6, React 19, TypeScript 5 |
+| Build | Vite 8, React 19, TypeScript 5.9 |
 | 3D | three, @react-three/fiber, @react-three/drei, @react-three/postprocessing |
 | Animation | @react-spring/three for camera and tile springs; CSS transitions for HTML overlays |
 | State | zustand (one store) |
-| Markdown | gray-matter for frontmatter, marked for body, imported with Vite `import.meta.glob` as raw strings |
+| Markdown | a small in-repo frontmatter parser (gray-matter needs Node Buffer in the browser), marked for the body, imported with Vite `import.meta.glob` as raw strings |
 | Tests | vitest, @testing-library/react, @playwright/test |
 | Lint/format | eslint, prettier |
 | Hosting | GitHub Pages via GitHub Actions, static files only |
@@ -59,7 +59,7 @@ src/
     Ring.tsx               lays <Tile/>s on the cylinder, applies rotation
     Tile.tsx               plane + thumbnail texture + hover/focus visuals
     CameraRig.tsx          springs the camera between intro and browse poses
-    Effects.tsx            bloom, and blur in intro/panel modes
+    Effects.tsx            bloom pass; blur in intro/panel modes is a CSS filter on the canvas
     useRingDrag.ts         pointer + wheel + keyboard -> rotation, inertia, snap
     layout.ts              pure math: angles for N tiles, row offsets, nearest tile
   ui/
@@ -208,7 +208,7 @@ Stage:
 
 - Background `#050505`. Fog `#050505` from radius 4 to 9 so the far side of the ring fades.
 - Ambient light 0.6 plus one point light at the origin, warm gold `#D4AF37` at 0.4, so focused tiles read warmer.
-- Post-processing: bloom (threshold 0.85, intensity 0.6). In `intro` and `panel` modes, add a blur pass and drop tile tint to 0.45.
+- Post-processing: bloom (threshold 0.85, intensity 0.6). In `intro` and `panel` modes, a CSS `filter: blur(6px)` on the canvas element and tile tint dropped to 0.45.
 - Film grain is an HTML overlay (SVG turbulence, opacity 0.4, overlay blend), not a shader pass.
 
 Camera:
@@ -265,10 +265,10 @@ Fonts load from Google Fonts with `display=swap` and system fallbacks. Selection
 
 ## 11. Mobile and performance
 
-- Below 768 px: one row, texture size capped at 640 px wide, bloom and blur off, device pixel ratio capped at 1.5, touch drag gain doubled.
-- Desktop: two rows, textures at 1280 px, device pixel ratio capped at 2.
+- Below 768 px: one row, thumbnails use the 640 px `sddefault` size, bloom off, device pixel ratio capped at 1.5, touch drag gain doubled.
+- Desktop: two rows, thumbnails use the 1280 px `maxresdefault` size, device pixel ratio capped at 2.
 - Render loop is continuous in intro and browse, throttled to 30 fps in panel mode (idle rotation still runs), throttled to 10 fps in watching mode, paused when the tab is hidden.
-- Textures load lazily with a shared loader and a 6-tile lookahead around the focus; unloaded tiles show the placeholder colour until ready.
+- All thumbnails load at start through one shared loader (12 images); a tile shows the placeholder colour until its texture is ready. YouTube returns a 120x90 stand-in image with HTTP 200 for missing sizes, so the loader checks image width and falls back to `hqdefault` when it sees one.
 - Target: 60 fps on a 2020 laptop with integrated graphics, 30 fps or better on a mid-range 2022 phone, initial JS under 400 KB gzipped, first ring visible under 2 s on a 4G connection.
 
 ## 12. Failure handling
@@ -278,7 +278,7 @@ Fonts load from Google Fonts with `display=swap` and system fallbacks. Selection
 | WebGL unavailable at load | `webgl=false`, render Grid2D |
 | WebGL context lost | Attempt one restore; if it fails within 2 s, switch to Grid2D and keep state |
 | `maxresdefault` 404 or error | Retry with `hqdefault`, then placeholder with title |
-| YouTube iframe fails or blocked | Player shows the title and an "Open on YouTube" link |
+| YouTube iframe fails or blocked | An "Open on YouTube" link is always shown under the player, so the piece stays reachable |
 | Unknown hash slug or panel | Redirect to `#/work` |
 | `prefers-reduced-motion` | Camera fly-in becomes a 300 ms fade, idle rotation off, inertia off, drag steps one tile per gesture, bloom off |
 | Journal file with bad frontmatter | Build fails with the filename in the error |
