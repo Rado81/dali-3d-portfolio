@@ -1,4 +1,5 @@
-import { detectWebGL, isMobileViewport, fpsForMode } from "./device";
+import { detectWebGL, isMobileViewport, fpsForMode, initDevice } from "./device";
+import { useStore, resetStore } from "./store";
 
 test("detectWebGL is false when no context can be created", () => {
   const original = HTMLCanvasElement.prototype.getContext;
@@ -25,4 +26,14 @@ test("frame rate per mode", () => {
   expect(fpsForMode("browse")).toBe("always");
   expect(fpsForMode("panel")).toBe(30);
   expect(fpsForMode("watching")).toBe(10);
+});
+
+test("initDevice without WebGL sets webgl false and skips the intro", () => {
+  resetStore();
+  const original = HTMLCanvasElement.prototype.getContext;
+  HTMLCanvasElement.prototype.getContext = () => null;
+  initDevice();
+  expect(useStore.getState().webgl).toBe(false);
+  expect(useStore.getState().mode).toBe("browse");
+  HTMLCanvasElement.prototype.getContext = original;
 });

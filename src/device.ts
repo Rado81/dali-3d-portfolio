@@ -32,7 +32,9 @@ export function fpsForMode(mode: Mode): "always" | number {
 
 export function initDevice(): void {
   const s = useStore.getState();
-  s.setWebgl(detectWebGL());
+  const webgl = detectWebGL();
+  s.setWebgl(webgl);
+  if (!webgl) s.startBrowsing();
   s.setIsMobile(isMobileViewport());
   s.setReducedMotion(prefersReducedMotion());
 }

@@ -4,6 +4,7 @@ import { useStore } from "./store";
 import { initRouting } from "./routes";
 import { Stage } from "./scene/Stage";
 import { Overlay } from "./ui/Overlay";
+import { Grid2D } from "./ui/Grid2D";
 
 export default function App() {
   const webgl = useStore((s) => s.webgl);
@@ -20,7 +21,7 @@ export default function App() {
 
   return (
     <>
-      {webgl && <Stage />}
+      {webgl ? <Stage /> : <Grid2D />}
       <Overlay />
     </>
   );

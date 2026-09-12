@@ -84,6 +84,12 @@ export function resetStore(): void {
   useStore.setState(initialState);
 }
 
-export const selectFilteredProjects = (s: AppState): Project[] => filterProjects(s.filter);
+let filteredProjectsCache: { filter: FilterId; result: Project[] } | null = null;
+export const selectFilteredProjects = (s: AppState): Project[] => {
+  if (!filteredProjectsCache || filteredProjectsCache.filter !== s.filter) {
+    filteredProjectsCache = { filter: s.filter, result: filterProjects(s.filter) };
+  }
+  return filteredProjectsCache.result;
+};
 export const selectFocusedProject = (s: AppState): Project | undefined =>
   filterProjects(s.filter)[s.focusedIndex];
