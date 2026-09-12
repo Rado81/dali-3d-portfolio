@@ -33,7 +33,11 @@ export function Nav() {
       <button className="nav__burger" aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} onClick={() => setOpen((o) => !o)}>
         <span /><span />
       </button>
-      {open && <ul className="nav__sheet">{items}</ul>}
+      {open && (
+        <ul className="nav__sheet" onClick={() => setOpen(false)}>
+          {items}
+        </ul>
+      )}
     </header>
   );
 }
