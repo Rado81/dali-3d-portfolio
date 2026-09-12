@@ -2,5 +2,5 @@
   { "id": "cinematography", "title": "Cinematography", "description": "Full-service camera operation and visual direction for narrative films, commercials, and documentaries.", "icon": "Camera" },
   { "id": "color-grading", "title": "Color Grading", "description": "Professional color correction and grading to establish mood, tone, and visual consistency across your project.", "icon": "Palette" },
   { "id": "directing", "title": "Directing", "description": "Creative direction from concept through final cut, bringing stories to life with a distinct visual voice.", "icon": "Clapperboard" },
-  { "id": "consulting", "title": "Visual Consulting", "description": "Early-stage visual planning, shot design, and creative consulting for productions of any scale.", "icon": "Lightbulb" }
+  { "id": "consulting", "title": "Visual Consulting", "description": "Pre-production visual planning, shot design, and creative consulting for productions of any scale.", "icon": "Lightbulb" }
 ]

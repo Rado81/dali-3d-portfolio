@@ -24,7 +24,7 @@ test("Services shows four services and the four phases", () => {
   useStore.getState().openPanel("services");
   render(<Panel />);
   expect(screen.getByRole("heading", { name: /color grading/i })).toBeInTheDocument();
-  expect(screen.getByText(/pre-production/i)).toBeInTheDocument();
+  expect(screen.getByText("Pre-production", { selector: "strong" })).toBeInTheDocument();
 });
 
 test("Escape and the close button return to browse and restore focus", async () => {
