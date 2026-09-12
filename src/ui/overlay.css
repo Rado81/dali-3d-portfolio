@@ -141,3 +141,9 @@
 .grid2d__item img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border: 1px solid var(--text-subtle); border-radius: 2px; transition: border-color 0.25s; display: block; }
 .grid2d__item:hover img { border-color: var(--gold); }
 .grid2d__title { display: block; margin: 10px 0 2px; font-family: var(--font-display); font-size: 20px; letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+
+/* Film grain */
+.grain {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.4; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
