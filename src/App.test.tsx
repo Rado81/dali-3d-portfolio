@@ -18,3 +18,13 @@ test("without WebGL the grid replaces the stage", () => {
   expect(screen.queryByTestId("stage")).not.toBeInTheDocument();
   expect(screen.getAllByRole("button", { name: /dali showreel/i }).length).toBeGreaterThan(0);
 });
+
+test("the 2D fallback keeps the filter chips but drops the ring caption", () => {
+  useStore.getState().setWebgl(false);
+  useStore.getState().startBrowsing();
+  render(<App />);
+  expect(screen.getByRole("button", { name: /^all$/i })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /^aerial$/i })).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: /previous/i })).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: /next/i })).not.toBeInTheDocument();
+});

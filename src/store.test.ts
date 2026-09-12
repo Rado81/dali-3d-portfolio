@@ -1,4 +1,4 @@
-import { useStore, resetStore, selectFocusedProject } from "./store";
+import { useStore, resetStore, selectFocusedProject, selectFilteredProjects } from "./store";
 
 beforeEach(() => resetStore());
 
@@ -61,4 +61,22 @@ test("panels open and close back to browse", () => {
   expect(s.mode).toBe("browse");
   expect(s.panel).toBeNull();
   expect(s.journalSlug).toBeNull();
+});
+
+test("playing again while already watching keeps the original return mode", () => {
+  useStore.getState().play("5RXfPmbynlk");
+  expect(useStore.getState().returnMode).toBe("intro");
+  useStore.getState().play("5RXfPmbynlk");
+  expect(useStore.getState().returnMode).toBe("intro");
+  useStore.getState().stopPlaying();
+  expect(useStore.getState().mode).toBe("intro");
+});
+
+test("selectFilteredProjects returns a stable reference for the same filter", () => {
+  useStore.getState().setFilter("Narrative");
+  const first = selectFilteredProjects(useStore.getState());
+  useStore.getState().setFilter("Narrative");
+  const second = selectFilteredProjects(useStore.getState());
+  expect(first).toBe(second);
+  expect(selectFilteredProjects(useStore.getState())).toBe(second);
 });

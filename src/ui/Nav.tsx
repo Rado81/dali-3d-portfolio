@@ -14,7 +14,15 @@ export function Nav() {
   const panel = useStore((s) => s.panel);
   const [open, setOpen] = useState(false);
 
-  useEffect(() => setOpen(false), [mode, panel]);
+  // subscribe to the store rather than reacting to a render, so the sheet closes
+  // when navigation changes the route without a setState inside an effect body
+  useEffect(
+    () =>
+      useStore.subscribe((s, prev) => {
+        if (s.mode !== prev.mode || s.panel !== prev.panel) setOpen(false);
+      }),
+    [],
+  );
 
   const isCurrent = (p: PanelId | null) => (mode === "panel" ? panel === p : mode === "browse" && p === null);
 

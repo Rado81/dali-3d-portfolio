@@ -22,7 +22,10 @@ export function Stage() {
           let timer = 0;
           gl.domElement.addEventListener("webglcontextlost", (e) => {
             e.preventDefault();
-            timer = window.setTimeout(() => useStore.getState().setWebgl(false), RESTORE_GRACE_MS);
+            timer = window.setTimeout(() => {
+              useStore.getState().startBrowsing(); // no title card left hanging over the 2D grid
+              useStore.getState().setWebgl(false);
+            }, RESTORE_GRACE_MS);
           });
           gl.domElement.addEventListener("webglcontextrestored", () => window.clearTimeout(timer));
         }}

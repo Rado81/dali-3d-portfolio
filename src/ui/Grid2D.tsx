@@ -10,7 +10,7 @@ export function Grid2D() {
         {projects.map((p) => (
           <li key={p.slug}>
             <button className="grid2d__item" onClick={() => play(p.youtubeId)}>
-              <img src={thumbnailChain(p.youtubeId, true)[1]} alt={p.title} loading="lazy" width="480" height="360" />
+              <img src={thumbnailChain(p.youtubeId, true)[1]} alt="" loading="lazy" width="480" height="360" />
               <span className="grid2d__title">{p.title}</span>
               <span className="label">{p.category}</span>
             </button>

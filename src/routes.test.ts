@@ -100,3 +100,17 @@ test("ring stepping replaces the hash without a history entry; structural change
   replaceSpy.mockRestore();
   stop();
 });
+
+test("Watch Reel from the intro survives the hash echo and closes back to the intro", async () => {
+  const stop = initRouting();
+  useStore.getState().play("5RXfPmbynlk");
+  expect(window.location.hash).toBe("#/play/dali-showreel");
+
+  await new Promise((r) => setTimeout(r, 10)); // let the hashchange echo land
+  expect(useStore.getState().returnMode).toBe("intro");
+
+  useStore.getState().stopPlaying();
+  expect(useStore.getState().mode).toBe("intro");
+  expect(window.location.hash).toBe("#/");
+  stop();
+});

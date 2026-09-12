@@ -35,7 +35,7 @@ export function addWheel(m: RingMotion, deltaX: number, deltaY: number): RingMot
 export function integrate(m: RingMotion, dtMs: number, snapTargetFor: (rotation: number) => number): RingMotion {
   const frames = dtMs / FRAME_MS;
   if (m.target === null) {
-    let rotation = m.rotation + m.velocity * frames;
+    const rotation = m.rotation + m.velocity * frames;
     let velocity = m.velocity * Math.pow(DECAY, frames);
     let target: number | null = null;
     if (Math.abs(velocity) < SNAP_VELOCITY) {

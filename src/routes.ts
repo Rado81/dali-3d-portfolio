@@ -86,6 +86,9 @@ export function initRouting(): () => void {
   let applying = false;
 
   const onHashChange = () => {
+    // A hash we just wrote from the store echoes back asynchronously; re-applying it
+    // would re-run actions like play() against state they already produced.
+    if (window.location.hash === stateToHash(useStore.getState())) return;
     applying = true;
     try {
       applyHash(window.location.hash);

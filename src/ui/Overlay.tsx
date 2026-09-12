@@ -22,12 +22,8 @@ export function Overlay() {
       <ProjectList />
       {mode === "intro" && <Intro />}
       {showNav && <Nav />}
-      {mode === "browse" && (
-        <>
-          <Filter />
-          <Caption />
-        </>
-      )}
+      {mode === "browse" && <Filter />}
+      {mode === "browse" && webgl && <Caption />}
       {mode === "panel" && <Panel />}
       {mode === "watching" && <Player />}
     </>

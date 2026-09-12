@@ -12,6 +12,8 @@ Node 22.12 or newer (see .node-version).
     npm run test:e2e     # Playwright (builds first)
     npm run build        # dist/
 
+If a preview server is already listening on port 4173, Playwright reuses it and skips the build — stop it first to test a fresh build.
+
 ## Edit content
 
 - Work: `src/content/projects.ts` — add `{ title, category, youtubeId }` and push.

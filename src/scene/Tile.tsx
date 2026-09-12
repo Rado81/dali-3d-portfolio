@@ -4,6 +4,7 @@ import { animated, useSpring } from "@react-spring/three";
 import { Text } from "@react-three/drei";
 import { Color, type MeshBasicMaterial } from "three";
 import type { Project } from "../content/projects";
+import { useStore } from "../store";
 import { slotPosition, slotRotationY, TILE_H, TILE_W, type TileSlot } from "./layout";
 import { useThumbnail } from "./useThumbnail";
 import { CLICK_MAX_PX } from "./ringPhysics";
@@ -20,6 +21,7 @@ interface TileProps {
 
 export function Tile({ slot, project, focused, dim, onSelect }: TileProps) {
   const texture = useThumbnail(project.youtubeId);
+  const reducedMotion = useStore((s) => s.reducedMotion);
   const [hovered, setHovered] = useState(false);
   const material = useRef<MeshBasicMaterial>(null);
 
@@ -28,10 +30,12 @@ export function Tile({ slot, project, focused, dim, onSelect }: TileProps) {
     from: { scale: 0, tintValue: 0.45, edge: 0 },
     to: { scale: focused ? 1.25 : hovered ? 1.08 : 1, tintValue: tint, edge: focused ? 1 : 0 },
     config: { tension: 170, friction: 26 },
+    immediate: reducedMotion,
   });
 
   useFrame(() => {
-    if (material.current) material.current.color.setScalar(tintValue.get());
+    // the placeholder keeps its own colour; tinting only applies to the thumbnail map
+    if (texture && material.current) material.current.color.setScalar(tintValue.get());
   });
 
   const handleClick = (e: ThreeEvent<MouseEvent>) => {

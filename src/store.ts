@@ -67,7 +67,8 @@ export const useStore = create<AppState>()((set, get) => ({
     set((s) => ({
       mode: "watching",
       playingId: youtubeId,
-      returnMode: s.mode === "intro" ? "intro" : "browse",
+      // already watching (e.g. a hash echo re-applying #/play/<slug>) keeps the original origin
+      returnMode: s.mode === "watching" ? s.returnMode : s.mode === "intro" ? "intro" : "browse",
       panel: null,
       journalSlug: null,
     })),
