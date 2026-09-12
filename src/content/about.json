@@ -1,0 +1,17 @@
+{
+  "bio": "Dali Sandic is a cinematographer and visual storyteller based in Copenhagen, Denmark. With over 8 years of experience behind the camera, Dali has crafted visuals for narrative films, commercials, music videos, and documentaries across Europe and beyond.",
+  "longBio": "Every frame tells a story. That belief drives every project I take on — whether it's a feature film shot over 30 days across three countries or a 30-second commercial that needs to capture lightning in a bottle. I specialize in creating visual languages that serve the narrative, blending technical precision with an intuitive feel for light, movement, and emotion.",
+  "timeline": [
+    { "year": 2018, "title": "First Short Film", "description": "Debuted as cinematographer on award-winning short 'Fragments'" },
+    { "year": 2019, "title": "Commercial Work", "description": "Began shooting commercials for Scandinavian brands" },
+    { "year": 2021, "title": "First Feature", "description": "Shot first feature-length narrative film" },
+    { "year": 2023, "title": "International Work", "description": "Expanded to international productions across Europe" },
+    { "year": 2025, "title": "Studio Founded", "description": "Established Sandic Film as a full-service production entity" }
+  ],
+  "equipment": ["ARRI Alexa Mini LF", "Sony FX6", "DJI Ronin 4D", "Cooke Anamorphic Lenses", "DaVinci Resolve"],
+  "awards": [
+    { "year": 2022, "title": "Best Cinematography", "event": "Nordic Short Film Festival" },
+    { "year": 2023, "title": "Silver Award", "event": "Copenhagen Commercial Awards" },
+    { "year": 2024, "title": "Official Selection", "event": "Gothenburg Film Festival" }
+  ]
+}
