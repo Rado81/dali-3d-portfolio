@@ -2,11 +2,13 @@ import { useRef, useState } from "react";
 import { useFrame, type ThreeEvent } from "@react-three/fiber";
 import { animated, useSpring } from "@react-spring/three";
 import { Text } from "@react-three/drei";
-import type { MeshStandardMaterial } from "three";
+import { Color, type MeshBasicMaterial } from "three";
 import type { Project } from "../content/projects";
 import { slotPosition, slotRotationY, TILE_H, TILE_W, type TileSlot } from "./layout";
 import { useThumbnail } from "./useThumbnail";
 import { CLICK_MAX_PX } from "./ringPhysics";
+
+const HDR_GOLD = new Color("#D4AF37").multiplyScalar(1.5);
 
 interface TileProps {
   slot: TileSlot;
@@ -19,7 +21,7 @@ interface TileProps {
 export function Tile({ slot, project, focused, dim, onSelect }: TileProps) {
   const texture = useThumbnail(project.youtubeId);
   const [hovered, setHovered] = useState(false);
-  const material = useRef<MeshStandardMaterial>(null);
+  const material = useRef<MeshBasicMaterial>(null);
 
   const tint = dim ? 0.45 : focused ? 1 : hovered ? 0.9 : 0.75;
   const { scale, tintValue, edge } = useSpring({
@@ -47,17 +49,9 @@ export function Tile({ slot, project, focused, dim, onSelect }: TileProps) {
       >
         <planeGeometry args={[TILE_W, TILE_H]} />
         {texture ? (
-          <meshStandardMaterial
-            ref={material}
-            map={texture}
-            emissive="#ffffff"
-            emissiveMap={texture}
-            emissiveIntensity={0.35}
-            roughness={0.9}
-            metalness={0}
-          />
+          <meshBasicMaterial ref={material} map={texture} />
         ) : (
-          <meshStandardMaterial ref={material} color="#111111" roughness={1} />
+          <meshBasicMaterial ref={material} color="#111111" />
         )}
       </animated.mesh>
       {!texture && (
@@ -67,7 +61,7 @@ export function Tile({ slot, project, focused, dim, onSelect }: TileProps) {
       )}
       <animated.mesh position-z={-0.01} scale={scale.to((s) => s * 1.02)}>
         <planeGeometry args={[TILE_W, TILE_H]} />
-        <animated.meshBasicMaterial color="#D4AF37" transparent opacity={edge} toneMapped={false} />
+        <animated.meshBasicMaterial color={HDR_GOLD} transparent opacity={edge} toneMapped={false} />
       </animated.mesh>
       <mesh position={[0, -0.08, -0.05]} scale={[1.04, 1.04, 1]}>
         <planeGeometry args={[TILE_W, TILE_H]} />

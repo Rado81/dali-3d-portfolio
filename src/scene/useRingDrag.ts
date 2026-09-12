@@ -22,10 +22,11 @@ export function useRingDrag(group: RefObject<Group | null>, slots: TileSlot[]): 
   const lastFocused = useRef<number>(-1);
   const slotsRef = useRef(slots);
   slotsRef.current = slots;
+  const lastSlots = useRef<TileSlot[]>(slots);
+  const dragging = useRef<boolean>(false);
 
   useEffect(() => {
     const el = gl.domElement;
-    let dragging = false;
     let startX = 0, startY = 0, lastX = 0, startT = 0, rowSwitched = false;
 
     const gain = () => (useStore.getState().isMobile ? DRAG_GAIN_TOUCH : DRAG_GAIN_DESKTOP);
@@ -33,7 +34,7 @@ export function useRingDrag(group: RefObject<Group | null>, slots: TileSlot[]): 
 
     const onDown = (e: PointerEvent) => {
       if (!canDrag()) return;
-      dragging = true;
+      dragging.current = true;
       rowSwitched = false;
       startX = lastX = e.clientX;
       startY = e.clientY;
@@ -41,7 +42,7 @@ export function useRingDrag(group: RefObject<Group | null>, slots: TileSlot[]): 
       el.setPointerCapture(e.pointerId);
     };
     const onMove = (e: PointerEvent) => {
-      if (!dragging) return;
+      if (!dragging.current) return;
       const dx = e.clientX - lastX;
       lastX = e.clientX;
       if (useStore.getState().reducedMotion) return;
@@ -53,8 +54,8 @@ export function useRingDrag(group: RefObject<Group | null>, slots: TileSlot[]): 
       }
     };
     const onUp = (e: PointerEvent) => {
-      if (!dragging) return;
-      dragging = false;
+      if (!dragging.current) return;
+      dragging.current = false;
       el.releasePointerCapture(e.pointerId);
       const dist = Math.hypot(e.clientX - startX, e.clientY - startY);
       const dur = performance.now() - startT;
@@ -73,7 +74,7 @@ export function useRingDrag(group: RefObject<Group | null>, slots: TileSlot[]): 
       if (!canDrag()) return;
       e.preventDefault();
       if (e.shiftKey) {
-        switchRow(e.deltaY > 0 ? 1 : 0);
+        switchRow((e.deltaY || e.deltaX) > 0 ? 1 : 0);
         return;
       }
       if (useStore.getState().reducedMotion) {
@@ -111,25 +112,33 @@ export function useRingDrag(group: RefObject<Group | null>, slots: TileSlot[]): 
     const current = slotsRef.current;
     if (current.length === 0) return;
 
+    if (current !== lastSlots.current) {
+      lastSlots.current = current;
+      lastFocused.current = -1; // slots changed (e.g. filter) — force re-target
+    }
+
     if (s.mode === "intro" || s.mode === "panel") {
       if (!s.reducedMotion) motion.current = { rotation: motion.current.rotation + (IDLE_RAD_PER_SEC * dtMs) / 1000, velocity: 0, target: null };
       lastFocused.current = -1; // force re-snap when we come back
     } else {
+      if (s.focusedIndex >= current.length) return; // stale index against these slots; wait for the store to settle
       if (s.focusedIndex !== lastFocused.current) {
         const target = rotationFor(s.focusedIndex, current, motion.current.rotation);
         motion.current = { ...motion.current, velocity: 0, target };
         lastFocused.current = s.focusedIndex;
       }
-      const wasSettled = isSettled(motion.current);
-      motion.current = integrate(motion.current, dtMs, (r) => {
-        const idx = nearestIndex(r, current, current[s.focusedIndex]?.row);
-        return rotationFor(idx, current, r);
-      });
-      if (!wasSettled && isSettled(motion.current)) {
-        const idx = nearestIndex(motion.current.rotation, current);
-        if (idx !== s.focusedIndex) {
-          lastFocused.current = idx;
-          s.focus(idx);
+      if (!dragging.current) {
+        const wasSettled = isSettled(motion.current);
+        motion.current = integrate(motion.current, dtMs, (r) => {
+          const idx = nearestIndex(r, current, current[s.focusedIndex]?.row);
+          return rotationFor(idx, current, r);
+        });
+        if (!wasSettled && isSettled(motion.current)) {
+          const idx = nearestIndex(motion.current.rotation, current);
+          if (idx !== s.focusedIndex) {
+            lastFocused.current = idx;
+            s.focus(idx);
+          }
         }
       }
     }

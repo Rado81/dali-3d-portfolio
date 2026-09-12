@@ -12,13 +12,15 @@ export async function loadThumbnail(urls: string[], loader: TextureLoader = shar
   for (const url of urls) {
     try {
       const texture = await loader.loadAsync(url);
-      const width = (texture.image as { width?: number } | undefined)?.width ?? 0;
+      const image = texture.image as { width?: number; height?: number } | undefined;
+      const width = image?.width ?? 0;
+      const height = image?.height ?? 0;
       if (width <= STAND_IN_WIDTH) {
         texture.dispose();
         continue;
       }
       texture.colorSpace = SRGBColorSpace;
-      if (url.endsWith("hqdefault.jpg")) {
+      if (height > 0 && width / height < 1.7) {
         texture.repeat.set(1, 0.75);
         texture.offset.set(0, 0.125);
       }
