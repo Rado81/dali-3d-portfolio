@@ -22,7 +22,7 @@
 - Drag numbers: desktop gain 0.006 rad/px, touch 0.012, wheel 0.0015 rad/unit, decay 0.92 per 60 fps frame, snap when |v| < 0.002 rad/frame, snap time constant 80 ms, click = under 6 px and 200 ms.
 - Mobile = viewport width under 768 px: one row, `sddefault` thumbnails, no bloom, dpr cap 1.5. Desktop: two rows, `maxresdefault`, dpr cap 2.
 - Hash routes exactly as spec section 7. Unknown → `#/work`.
-- Commit after every task with the message given. Every commit message ends with `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>`.
+- Commit after every task with the message given. Every commit message ends with `Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>`.
 - The existing `Rado81/dali-portfolio` repository is read-only source material. Never push to it.
 - Run commands from the project root: `C:\Ondrive\OneDrive - crossjoin.dk\Desktop\ClaudeCode Projects\3DWebsite`. On Windows use Git Bash syntax for the commands shown.
 
@@ -361,7 +361,7 @@ Run `npm run dev`, open http://localhost:5173, confirm the name renders in Bebas
 git add -A
 git commit -m "chore: scaffold Vite + React + TS with tokens and test runner
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
 ---
@@ -775,7 +775,7 @@ Expected: all content tests pass, no type errors.
 git add -A
 git commit -m "feat: add site content, projects, and journal loader
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
 ---
@@ -984,7 +984,7 @@ Expected: 6 tests pass.
 git add src/store.ts src/store.test.ts
 git commit -m "feat: add app store with mode transitions
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
 ---
@@ -1232,7 +1232,7 @@ Expected: 6 tests pass.
 git add src/routes.ts src/routes.test.ts
 git commit -m "feat: add hash routing mirrored with the store
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
 ---
@@ -1400,7 +1400,7 @@ Expected: 6 tests pass. If `slotPosition` returns `-0` for x, change the test to
 git add src/scene/layout.ts src/scene/layout.test.ts
 git commit -m "feat: add pure ring layout math
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
 ---
@@ -1559,7 +1559,7 @@ Expected: 6 tests pass.
 git add src/scene/ringPhysics.ts src/scene/ringPhysics.test.ts
 git commit -m "feat: add pure ring drag physics
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
 ---
@@ -2217,7 +2217,7 @@ If the ring is not visible, check the browser console first, then confirm textur
 git add -A
 git commit -m "feat: render the 3D ring with drag, snap, camera fly-in, and bloom
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
 ---
@@ -2595,7 +2595,7 @@ Expected: all pass, including the App test (the name is now rendered by Intro).
 git add -A
 git commit -m "feat: add intro, nav, filter and caption overlays
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
 ---
@@ -3004,7 +3004,7 @@ Expected: all pass.
 git add -A
 git commit -m "feat: add About, Services, Journal and Contact panels with focus trap
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
 ---
@@ -3129,7 +3129,7 @@ Run: `npm test` → all pass.
 git add -A
 git commit -m "feat: add YouTube player overlay
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
 ---
@@ -3257,7 +3257,7 @@ In Chrome, open chrome://flags, set "WebGL" to disabled (or run `chrome --disabl
 git add -A
 git commit -m "feat: add 2D thumbnail grid fallback for devices without WebGL
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
 ---
@@ -3466,7 +3466,7 @@ In Chrome DevTools, Rendering tab, emulate `prefers-reduced-motion: reduce`, rel
 git add -A
 git commit -m "feat: keyboard navigation, film grain, hidden project list, reduced motion
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
 ---
@@ -3569,7 +3569,7 @@ Expected: after two seconds the canvas is replaced by the 2D grid with the same 
 git add -A
 git commit -m "feat: throttle rendering per mode and fall back on WebGL context loss
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
 ---
@@ -3665,7 +3665,7 @@ Expected: 3 passed. If the first test fails on the iframe, check that the YouTub
 git add -A
 git commit -m "test: add Playwright end-to-end coverage
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
 ---
@@ -3785,7 +3785,7 @@ Expected: `404.html` exists and asset URLs carry the base path. Then run `npm ru
 git add -A
 git commit -m "chore: GitHub Pages deployment workflow and README
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
 After this task, create the remote repository under the user's GitHub account with the name they choose, push `main`, and enable Pages with the "GitHub Actions" source. Do not push until the user confirms the repository name.
