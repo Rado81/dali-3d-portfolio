@@ -78,3 +78,25 @@ test("initRouting mirrors store changes into the hash and back", async () => {
   expect(useStore.getState().panel).toBe("about");
   stop();
 });
+
+test("ring stepping replaces the hash without a history entry; structural changes push", async () => {
+  const stop = initRouting();
+  useStore.getState().enter();
+  await new Promise((r) => setTimeout(r, 0));
+  const replaceSpy = vi.spyOn(window.history, "replaceState");
+  const lengthBefore = window.history.length;
+
+  useStore.getState().step(1);
+  expect(window.location.hash).toBe("#/work/lifestyle-mix-commercials");
+  expect(replaceSpy).toHaveBeenCalledTimes(1);
+  expect(window.history.length).toBe(lengthBefore);
+
+  replaceSpy.mockClear();
+  useStore.getState().openPanel("about");
+  expect(window.location.hash).toBe("#/about");
+  expect(replaceSpy).not.toHaveBeenCalled();
+  expect(window.history.length).toBe(lengthBefore + 1);
+
+  replaceSpy.mockRestore();
+  stop();
+});
