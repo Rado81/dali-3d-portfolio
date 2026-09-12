@@ -49,9 +49,9 @@ export function Tile({ slot, project, focused, dim, onSelect }: TileProps) {
       >
         <planeGeometry args={[TILE_W, TILE_H]} />
         {texture ? (
-          <meshBasicMaterial ref={material} map={texture} />
+          <meshBasicMaterial key="textured" ref={material} map={texture} />
         ) : (
-          <meshBasicMaterial ref={material} color="#111111" />
+          <meshBasicMaterial key="placeholder" ref={material} color="#111111" />
         )}
       </animated.mesh>
       {!texture && (
