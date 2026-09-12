@@ -4,6 +4,7 @@ import { Nav } from "./Nav";
 import { Filter } from "./Filter";
 import { Caption } from "./Caption";
 import { Panel } from "./Panel";
+import { Player } from "./Player";
 import "./overlay.css";
 
 export function Overlay() {
@@ -21,6 +22,7 @@ export function Overlay() {
         </>
       )}
       {mode === "panel" && <Panel />}
+      {mode === "watching" && <Player />}
     </>
   );
 }

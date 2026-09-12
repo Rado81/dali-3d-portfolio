@@ -123,3 +123,13 @@
 .contact__social a { text-decoration: none; color: var(--text-secondary); }
 .contact__social a:hover { color: var(--gold); }
 @media (max-width: 767px) { .panel { padding: 76px 24px 40px; } .panel__title { font-size: 32px; } }
+
+/* Player */
+.player { position: fixed; inset: 0; z-index: 7; background: rgba(5, 5, 5, 0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; animation: fade-in 0.4s; }
+.player__close { position: absolute; top: 20px; right: 24px; font-size: 32px; line-height: 1; color: var(--text-muted); transition: color 0.25s; }
+.player__close:hover { color: var(--text-primary); }
+.player__frame { width: min(90vw, calc(85vh * 16 / 9)); aspect-ratio: 16 / 9; border-radius: 4px; overflow: hidden; background: #000; animation: scale-in 0.3s var(--ease-out); }
+.player__frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+.player__link { color: var(--text-muted); text-decoration: none; }
+.player__link:hover { color: var(--gold); }
+@keyframes scale-in { from { transform: scale(0.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
