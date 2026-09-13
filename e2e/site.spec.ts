@@ -31,13 +31,25 @@ test("deep link opens a panel without the intro", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Enter the Work" })).toHaveCount(0);
 });
 
-test("without WebGL the 2D grid is shown", async ({ page }) => {
+test("without WebGL the 2D grid is shown and the 3D code is never downloaded", async ({ page }) => {
+  const scripts: string[] = [];
+  page.on("request", (r) => { if (r.resourceType() === "script") scripts.push(r.url()); });
   await page.addInitScript(() => {
     HTMLCanvasElement.prototype.getContext = () => null;
   });
   await page.goto("/");
   await expect(page.getByRole("button", { name: /Dali Showreel/ })).toBeVisible();
   await expect(page.locator("canvas")).toHaveCount(0);
+  await page.waitForLoadState("networkidle");
+  expect(scripts.filter((u) => /\/assets\/Stage-/.test(u))).toEqual([]);
+});
+
+test("with WebGL the 3D scene arrives as its own chunk", async ({ page }) => {
+  const scripts: string[] = [];
+  page.on("request", (r) => { if (r.resourceType() === "script") scripts.push(r.url()); });
+  await page.goto("/#/work");
+  await page.waitForSelector("canvas[data-ring-ready]");
+  expect(scripts.some((u) => /\/assets\/Stage-/.test(u))).toBe(true);
 });
 
 test("a slow drag moves one tile and a flick throws the ring further", async ({ page }) => {

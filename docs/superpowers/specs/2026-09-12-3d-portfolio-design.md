@@ -276,7 +276,8 @@ Fonts load from Google Fonts with `display=swap` and system fallbacks. Selection
 - Desktop: thumbnails use the 1280 px `maxresdefault` size, device pixel ratio capped at 2.
 - Render loop is continuous in intro and browse, throttled to 30 fps in panel mode (idle rotation still runs), throttled to 10 fps in watching mode, paused when the tab is hidden.
 - All thumbnails load at start through one shared loader (12 images); a tile shows the placeholder colour until its texture is ready. YouTube returns a 120x90 stand-in image with HTTP 200 for missing sizes, so the loader checks image width and falls back to `hqdefault` when it sees one.
-- Target: 60 fps on a 2020 laptop with integrated graphics, 30 fps or better on a mid-range 2022 phone, initial JS under 400 KB gzipped, first ring visible under 2 s on a 4G connection.
+- The 3D scene is a separate chunk loaded with `React.lazy` (`src/stage.ts`). The entry bundle with the overlays is about 82 KB gzipped, so the title card paints without waiting for three.js; the scene chunk (about 318 KB gzipped) starts downloading as soon as WebGL is detected and fades in behind the overlays. The 2D fallback never requests it, which an end-to-end test checks.
+- Target: 60 fps on a 2020 laptop with integrated graphics, 30 fps or better on a mid-range 2022 phone, entry JS under 100 KB gzipped, first ring visible under 2 s on a 4G connection.
 
 ## 12. Failure handling
 
