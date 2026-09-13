@@ -50,7 +50,12 @@ export function projectByYoutubeId(id: string): Project | undefined {
   return projects.find((p) => p.youtubeId === id);
 }
 
-export function thumbnailChain(youtubeId: string, mobile: boolean): string[] {
+/**
+ * Thumbnail urls to try in order. A preview is YouTube's 320x180 mqdefault, which always exists
+ * and is already 16:9. Full resolution is sized by device and falls back to hqdefault.
+ */
+export function thumbnailChain(youtubeId: string, mobile: boolean, quality: "preview" | "full" = "full"): string[] {
   const base = `https://img.youtube.com/vi/${youtubeId}/`;
+  if (quality === "preview") return [base + "mqdefault.jpg"];
   return [base + (mobile ? "sddefault.jpg" : "maxresdefault.jpg"), base + "hqdefault.jpg"];
 }

@@ -32,25 +32,46 @@ export async function loadThumbnail(urls: string[], loader: TextureLoader = shar
   return null;
 }
 
-export function useThumbnail(youtubeId: string): Texture | null {
+function load(key: string, urls: () => string[]): Promise<Texture | null> {
+  let promise = cache.get(key);
+  if (!promise) {
+    promise = loadThumbnail(urls());
+    cache.set(key, promise);
+  }
+  return promise;
+}
+
+/** Full-resolution keys a tile has asked for; once asked, a tile keeps full resolution. */
+const fullRequested = new Set<string>();
+
+/**
+ * A tile's texture. Far-away tiles and the blurred ring behind the title card get a small preview;
+ * `wantFull` upgrades to full resolution, keeping the preview on screen until the sharp image
+ * arrives, and the tile never drops back once it has been sharp.
+ */
+export function useThumbnail(youtubeId: string, wantFull: boolean): Texture | null {
   const isMobile = useStore((s) => s.isMobile);
   const [texture, setTexture] = useState<Texture | null>(null);
 
   useEffect(() => {
-    const key = `${youtubeId}:${isMobile ? "m" : "d"}`;
-    let promise = cache.get(key);
-    if (!promise) {
-      promise = loadThumbnail(thumbnailChain(youtubeId, isMobile));
-      cache.set(key, promise);
-    }
+    const previewKey = `${youtubeId}:preview`;
+    const fullKey = `${youtubeId}:${isMobile ? "m" : "d"}`;
+    if (wantFull) fullRequested.add(fullKey);
+
     let alive = true;
-    promise.then((t) => {
-      if (alive) setTexture(t);
-    });
+    const show = (t: Texture | null) => {
+      if (alive && t) setTexture(t);
+    };
+    const preview = () => load(previewKey, () => thumbnailChain(youtubeId, isMobile, "preview"));
+    if (fullRequested.has(fullKey)) {
+      load(fullKey, () => thumbnailChain(youtubeId, isMobile, "full")).then((t) => (t ? show(t) : preview().then(show)));
+    } else {
+      preview().then(show);
+    }
     return () => {
       alive = false;
     };
-  }, [youtubeId, isMobile]);
+  }, [youtubeId, isMobile, wantFull]);
 
   return texture;
 }

@@ -3,6 +3,7 @@ import type { Group } from "three";
 import { filterProjects } from "../content/projects";
 import { useStore } from "../store";
 import { layoutRing } from "./layout";
+import { wantsFullRes } from "./thumbnailPriority";
 import { Tile } from "./Tile";
 import { useRingDrag } from "./useRingDrag";
 
@@ -31,7 +32,15 @@ export function Ring() {
   return (
     <group ref={group}>
       {projects.map((p, i) => (
-        <Tile key={p.slug} slot={slots[i]} project={p} focused={i === focusedIndex && !dim} dim={dim} onSelect={handleSelect} />
+        <Tile
+          key={p.slug}
+          slot={slots[i]}
+          project={p}
+          focused={i === focusedIndex && !dim}
+          dim={dim}
+          fullRes={wantsFullRes(i, focusedIndex, projects.length, mode)}
+          onSelect={handleSelect}
+        />
       ))}
     </group>
   );

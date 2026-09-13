@@ -149,3 +149,18 @@ for (const [label, width, height] of [
   });
 }
 
+test("the title card loads light previews and browsing upgrades only the tiles near focus", async ({ page }) => {
+  const thumbs: string[] = [];
+  page.on("request", (r) => { if (r.url().includes("img.youtube.com")) thumbs.push(r.url()); });
+  const count = (size: string) => new Set(thumbs.filter((u) => u.includes(size))).size;
+
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: "Dali Sandic" })).toBeVisible();
+  await expect.poll(() => count("mqdefault"), { timeout: 20000 }).toBe(12);
+  expect(count("maxresdefault")).toBe(0);
+
+  await page.getByRole("button", { name: "Enter the Work" }).click();
+  await expect.poll(() => count("maxresdefault"), { timeout: 20000 }).toBe(7); // the focused tile and three either side
+  await page.waitForTimeout(1500);
+  expect(count("maxresdefault")).toBe(7);
+});

@@ -40,3 +40,8 @@ test("thumbnail chain picks size by device and always ends with hqdefault", () =
   ]);
   expect(thumbnailChain("abc", true)[0]).toBe("https://img.youtube.com/vi/abc/sddefault.jpg");
 });
+
+test("a preview is the small 16:9 mqdefault image on any device", () => {
+  expect(thumbnailChain("abc", false, "preview")).toEqual(["https://img.youtube.com/vi/abc/mqdefault.jpg"]);
+  expect(thumbnailChain("abc", true, "preview")).toEqual(["https://img.youtube.com/vi/abc/mqdefault.jpg"]);
+});

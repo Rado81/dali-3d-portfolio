@@ -16,11 +16,12 @@ interface TileProps {
   project: Project;
   focused: boolean;
   dim: boolean;
+  fullRes: boolean;
   onSelect(index: number): void;
 }
 
-export function Tile({ slot, project, focused, dim, onSelect }: TileProps) {
-  const texture = useThumbnail(project.youtubeId);
+export function Tile({ slot, project, focused, dim, fullRes, onSelect }: TileProps) {
+  const texture = useThumbnail(project.youtubeId, fullRes);
   const reducedMotion = useStore((s) => s.reducedMotion);
   const [hovered, setHovered] = useState(false);
   const material = useRef<MeshBasicMaterial>(null);
