@@ -8,7 +8,7 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
-    css: false,
+    css: { include: [/tokens\.css/] }, // only the tokens, so tokens.test.ts can read the real values
     exclude: ["e2e/**", "node_modules/**"],
   },
 });

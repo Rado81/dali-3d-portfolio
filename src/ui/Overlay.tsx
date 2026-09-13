@@ -1,3 +1,4 @@
+import { site } from "../content/site";
 import { useStore } from "../store";
 import { Intro } from "./Intro";
 import { Nav } from "./Nav";
@@ -20,7 +21,8 @@ export function Overlay() {
   return (
     <>
       {webgl && <Grain />}
-      <ProjectList />
+      {/* the title card carries the visible h1; everywhere else the site name stays the page's top heading */}
+      {mode !== "intro" && <h1 className="visually-hidden">{site.name}</h1>}
       {mode === "intro" && <Intro />}
       {showNav && <Nav />}
       {mode === "browse" && <Filter />}
@@ -28,6 +30,8 @@ export function Overlay() {
       {mode === "browse" && webgl && <Pager />}
       {mode === "panel" && <Panel />}
       {mode === "watching" && <Player />}
+      {/* last in the tab order, after every visible control */}
+      <ProjectList />
     </>
   );
 }

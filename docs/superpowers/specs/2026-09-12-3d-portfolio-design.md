@@ -237,7 +237,7 @@ All overlays are HTML positioned over the canvas, using the tokens in section 10
 - **Nav**: fixed top bar. Wordmark SANDIC in gold Bebas Neue left, linking to `#/` so it returns to the title card from any panel, player or ring position. Work, About, Services, Journal, Contact right, 11 px Inter uppercase. Active item gold. Below 768 px a hamburger opens a full-screen list. Work closes any panel and returns to browse.
 - **Filter**: five chips centred under the nav in browse mode. Active chip gold text with a gold underline.
 - **Caption**: in browse mode, centred in the band between the filter chips and the top edge of the focused tile, which sits at 38.8 vh (`--tiles-top`, derived from the tile size, ring radius, camera fov and focus scale, and guarded by a test in `layout.test.ts`). Title in Bebas Neue 28 px with the category beneath, as plain text with no controls. Crossfades 200 ms when `focusedIndex` changes.
-- **Pager**: centred below the ring. Left and Right arrow buttons for non-drag users, with one 6 px dot per piece between them: muted grey, the current one gold and scaled 1.6. Each dot is a button that jumps straight to its piece, sized 18 px for a usable touch target around the 6 px mark. A screen-reader-only phrase ("Piece 4 of 12") states the position, and the current dot carries `aria-current`. A Play button sits in the cluster but is clipped out of view until it takes keyboard focus: the tiles live in the canvas and cannot be focused, so this is the only Tab-reachable way to play a piece.
+- **Pager**: centred below the ring. Left and Right arrow buttons for non-drag users, with one 6 px dot per piece between them: `--control-idle` grey, the current one gold and scaled 1.6. Each dot is a button that jumps straight to its piece, with a 24 px target around the 6 px mark (40 px tall on touch screens). On a narrow phone the dots shrink toward 12 px wide to keep the row on screen, and the 44 px arrows stay full size as the equivalent way to move between pieces. A screen-reader-only phrase ("Piece 4 of 12") states the position, and the current dot carries `aria-current`. A Play button sits in the cluster but is clipped out of view until it takes keyboard focus: the tiles live in the canvas and cannot be focused, so this is the only Tab-reachable way to play a piece.
 - **Panel**: fixed right side, 100% width on mobile and 520 px on desktop, background `#0A0A0A` at 96% with a 1 px gold-subtle left border, slides in over 400 ms. Scrim over the canvas at 60% black; clicking it closes. Close button top-right. Content scrolls inside the panel.
   - About: profile photo, `bio`, `longBio`, timeline as a vertical list with gold year labels, equipment as chips, awards as a list, testimonials as three quotes with name, role, company.
   - Services: four services as title plus description, then the four-phase process (Discovery, Pre-production, Production, Delivery) as a numbered list.
@@ -256,7 +256,9 @@ Lifted from the current site's stylesheet.
   --bg-deep: #050505;   --bg-base: #0A0A0A;  --bg-surface: #111111;  --bg-elevated: #1A1A1A;
   --gold: #D4AF37;      --gold-dark: #B8962E;
   --gold-glow: rgba(212,175,55,.15);   --gold-subtle: rgba(212,175,55,.08);
-  --text-primary: #F5F5F5;  --text-secondary: #AAAAAA;  --text-muted: #666666;  --text-subtle: #333333;
+  --text-primary: #F5F5F5;  --text-secondary: #AAAAAA;  --text-muted: #7A7A7A;
+  --text-subtle: #333333;   /* decorative dividers only */
+  --control-idle: #5E5E5E;  /* outlines and marks of resting controls */
   --font-sans: "Inter", system-ui, sans-serif;
   --font-display: "Bebas Neue", "Inter", sans-serif;
   --tracking-display: .25em;  --tracking-wide: .15em;  --tracking-label: .2em;
@@ -264,6 +266,8 @@ Lifted from the current site's stylesheet.
 ```
 
 Fonts load from Google Fonts with `display=swap` and system fallbacks. Selection colour is gold at 30%.
+
+`--text-muted` was `#666666` on the original site, which is only 3.5:1 on the stage; it is raised to `#7A7A7A` (4.7:1). `--text-subtle` stays for decorative dividers, and resting controls use `--control-idle` (3.1:1) so their outlines and dots stay visible. `src/tokens.test.ts` computes the WCAG ratios from the stylesheet and fails if a token drops below its threshold.
 
 ## 11. Mobile and performance
 
@@ -288,9 +292,11 @@ Fonts load from Google Fonts with `display=swap` and system fallbacks. Selection
 ## 13. Accessibility
 
 - Every overlay control is a real button or link with a visible focus ring in gold.
-- The ring has a visually hidden list of the projects as links so screen readers and search engines get the content. The Left and Right caption buttons make keyboard stepping discoverable.
+- The ring has a list of the projects as links so screen readers and search engines get the content. It sits last in the tab order, after every visible control, and is clipped out of view until keyboard focus enters it, when it appears as a small list in the bottom-left corner so focus never goes invisible. The Left and Right pager buttons make keyboard stepping discoverable.
+- Every mode has exactly one `h1`, the site name: visible on the title card, visually hidden elsewhere, with the caption and panel titles as `h2`.
+- The pager arrows, the mobile menu button and the panel and player close buttons are 44 px targets.
 - Panels trap focus while open and return it to the triggering nav item on close.
-- All text meets 4.5:1 contrast against the dark backgrounds. Muted text `#666666` is used only for labels 11 px and larger at uppercase tracking.
+- All text tokens meet 4.5:1 against both the stage and the panel background, and resting control marks meet 3:1, enforced by `tokens.test.ts`.
 
 ## 14. Testing
 

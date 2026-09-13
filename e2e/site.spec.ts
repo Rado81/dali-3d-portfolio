@@ -84,3 +84,31 @@ test("the wordmark returns to the title card from a panel and from the ring", as
   await page.getByRole("link", { name: /sandic/i }).click();
   await expect(page.getByRole("heading", { name: "Dali Sandic" })).toBeVisible();
 });
+
+test("controls are big enough to hit and keyboard focus never disappears", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/#/work");
+  await page.waitForSelector("canvas[data-ring-ready]");
+  const box = async (name: string | RegExp) => (await page.getByRole("button", { name }).first().boundingBox())!;
+
+  for (const name of ["Previous", "Next", "Open menu"]) {
+    const b = await box(name);
+    expect(b.width, name).toBeGreaterThanOrEqual(44);
+    expect(b.height, name).toBeGreaterThanOrEqual(44);
+  }
+  const dot = await box(/^Go to/);
+  expect(dot.height).toBeGreaterThanOrEqual(24);
+  expect(dot.width).toBeGreaterThanOrEqual(12); // shrinks on narrow phones; the 44px arrows stay full size
+
+  await page.goto("/#/about");
+  const close = await box("Close");
+  expect(close.width).toBeGreaterThanOrEqual(44);
+  expect(close.height).toBeGreaterThanOrEqual(44);
+
+  // the project index is out of sight until a keyboard reaches it, then it shows itself
+  await page.goto("/#/work");
+  const link = page.getByRole("link", { name: /Vlaska Teaser/ });
+  expect((await link.boundingBox())?.width ?? 0).toBeLessThanOrEqual(1);
+  await link.focus();
+  expect((await link.boundingBox())!.width).toBeGreaterThan(100);
+});
