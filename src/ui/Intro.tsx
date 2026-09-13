@@ -13,7 +13,7 @@ export function Intro() {
       <h1 className="display intro__name">{site.name}</h1>
       <p className="label intro__tagline">{site.title}</p>
       <div className="intro__actions">
-        <button className="btn" onClick={() => play(SHOWREEL.youtubeId)}>Watch Reel</button>
+        {/* the play circle above already starts the reel; a second button for it only split the choice */}
         <button className="btn btn--solid" onClick={enter}>Enter the Work</button>
       </div>
     </section>
