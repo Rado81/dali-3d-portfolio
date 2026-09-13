@@ -16,6 +16,17 @@ test("detectWebGL is true when a webgl context exists", () => {
   HTMLCanvasElement.prototype.getContext = original;
 });
 
+test("detectWebGL reuses the check made in the page head, so the context is only created once", () => {
+  const getContext = vi.spyOn(HTMLCanvasElement.prototype, "getContext");
+  window.__webgl = false;
+  expect(detectWebGL()).toBe(false);
+  window.__webgl = true;
+  expect(detectWebGL()).toBe(true);
+  expect(getContext).not.toHaveBeenCalled();
+  delete window.__webgl;
+  getContext.mockRestore();
+});
+
 test("mobile breakpoint is 768", () => {
   expect(isMobileViewport(767)).toBe(true);
   expect(isMobileViewport(768)).toBe(false);

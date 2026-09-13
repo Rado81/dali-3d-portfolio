@@ -2,6 +2,8 @@ import type { Mode } from "./store";
 import { useStore } from "./store";
 
 export function detectWebGL(): boolean {
+  // the inline script in the page head has already created a context to decide on preloading the scene
+  if (typeof window.__webgl === "boolean") return window.__webgl;
   try {
     const canvas = document.createElement("canvas");
     return Boolean(canvas.getContext("webgl2") || canvas.getContext("webgl"));

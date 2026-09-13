@@ -42,6 +42,7 @@ test("without WebGL the 2D grid is shown and the 3D code is never downloaded", a
   await expect(page.locator("canvas")).toHaveCount(0);
   await page.waitForLoadState("networkidle");
   expect(scripts.filter((u) => /\/assets\/Stage-/.test(u))).toEqual([]);
+  await expect(page.locator('link[rel="modulepreload"][href*="Stage-"]')).toHaveCount(0);
 });
 
 test("with WebGL the 3D scene arrives as its own chunk", async ({ page }) => {
@@ -50,6 +51,8 @@ test("with WebGL the 3D scene arrives as its own chunk", async ({ page }) => {
   await page.goto("/#/work");
   await page.waitForSelector("canvas[data-ring-ready]");
   expect(scripts.some((u) => /\/assets\/Stage-/.test(u))).toBe(true);
+  // fetched from the page head, in parallel with the entry script, rather than after it has run
+  await expect(page.locator('link[rel="modulepreload"][href*="Stage-"]')).toHaveCount(1);
 });
 
 test("a slow drag moves one tile and a flick throws the ring further", async ({ page }) => {
@@ -145,3 +148,4 @@ for (const [label, width, height] of [
     expect(category.y + category.height, "caption above the focused video").toBeLessThanOrEqual(tileTop);
   });
 }
+
