@@ -1,5 +1,6 @@
 import { filterProjects, projectBySlug, projectByYoutubeId } from "./content/projects";
 import { postBySlug } from "./content/journal";
+import { site } from "./content/site";
 import { PANEL_IDS, useStore, type AppState, type PanelId } from "./store";
 
 export function stateToHash(s: AppState): string {
@@ -17,6 +18,25 @@ export function stateToHash(s: AppState): string {
     case "panel": {
       if (s.panel === "journal") return s.journalSlug ? `#/journal/${s.journalSlug}` : "#/journal";
       return `#/${s.panel}`;
+    }
+  }
+}
+
+/** The browser tab title for a view, so tabs, history and bookmarks name what they point at. */
+export function titleFor(s: AppState): string {
+  const named = (name: string) => `${name} — ${site.name}`;
+  switch (s.mode) {
+    case "intro":
+      return `${site.name} — ${site.title}`;
+    case "browse":
+      return named(filterProjects(s.filter)[s.focusedIndex]?.title ?? "Work");
+    case "watching":
+      return named((s.playingId ? projectByYoutubeId(s.playingId)?.title : undefined) ?? "Work");
+    case "panel": {
+      const post = s.panel === "journal" && s.journalSlug ? postBySlug(s.journalSlug) : undefined;
+      if (post) return named(post.title);
+      const panel = s.panel ?? "work";
+      return named(panel.charAt(0).toUpperCase() + panel.slice(1));
     }
   }
 }
@@ -99,9 +119,11 @@ export function initRouting(): () => void {
 
   onHashChange();
   window.addEventListener("hashchange", onHashChange);
+  document.title = titleFor(useStore.getState());
 
   let prev = useStore.getState();
   const unsubscribe = useStore.subscribe((s) => {
+    document.title = titleFor(s);
     if (applying) {
       prev = s;
       return;

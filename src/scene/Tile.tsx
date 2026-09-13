@@ -68,10 +68,11 @@ export function Tile({ slot, project, focused, dim, fullRes, onSelect }: TilePro
         <planeGeometry args={[TILE_W, TILE_H]} />
         <animated.meshBasicMaterial color={HDR_GOLD} transparent opacity={edge} toneMapped={false} />
       </animated.mesh>
-      <mesh position={[0, -0.08, -0.05]} scale={[1.04, 1.04, 1]}>
+      {/* the shadow scales with the tile, so a tile growing in does not show a fixed dark box around it */}
+      <animated.mesh position-y={scale.to((s) => -0.08 * s)} position-z={-0.05} scale={scale.to((s) => s * 1.04)}>
         <planeGeometry args={[TILE_W, TILE_H]} />
         <meshBasicMaterial color="#000000" transparent opacity={0.55} />
-      </mesh>
+      </animated.mesh>
     </group>
   );
 }

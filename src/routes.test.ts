@@ -1,5 +1,5 @@
 import { useStore, resetStore } from "./store";
-import { stateToHash, applyHash, initRouting } from "./routes";
+import { stateToHash, applyHash, initRouting, titleFor } from "./routes";
 
 beforeEach(() => {
   resetStore();
@@ -130,5 +130,34 @@ test("the showreel played from the intro survives the hash echo and closes back 
   useStore.getState().stopPlaying();
   expect(useStore.getState().mode).toBe("intro");
   expect(window.location.hash).toBe("#/");
+  stop();
+});
+
+test("each view has its own tab title", () => {
+  const s = useStore.getState;
+  expect(titleFor(s())).toBe("Dali Sandic — Cinematographer & Visual Storyteller");
+  s().enter();
+  s().focus(8);
+  expect(titleFor(s())).toBe("Vlaska Teaser — Dali Sandic");
+  s().play("KduVhrnIQI4");
+  expect(titleFor(s())).toBe("Vlaska Teaser — Dali Sandic");
+  s().stopPlaying();
+  s().openPanel("services");
+  expect(titleFor(s())).toBe("Services — Dali Sandic");
+  s().openPanel("journal");
+  expect(titleFor(s())).toBe("Journal — Dali Sandic");
+  s().openPanel("journal", "behind-the-scenes-the-last-horizon");
+  expect(titleFor(s())).toMatch(/^Behind the Scenes.* — Dali Sandic$/);
+});
+
+test("initRouting keeps the document title in step with the view", () => {
+  const stop = initRouting();
+  expect(document.title).toBe("Dali Sandic — Cinematographer & Visual Storyteller");
+  useStore.getState().enter();
+  expect(document.title).toBe("Dali Showreel — Dali Sandic");
+  useStore.getState().step(1);
+  expect(document.title).toBe("Lifestyle Mix Commercials — Dali Sandic");
+  useStore.getState().openPanel("about");
+  expect(document.title).toBe("About — Dali Sandic");
   stop();
 });

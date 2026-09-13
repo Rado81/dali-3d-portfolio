@@ -188,6 +188,10 @@ Hash routes, mirrored both ways with the store:
 
 Unknown slug or panel falls back to `#/work`. Filter is not in the URL.
 
+Each view also sets the browser tab title (`titleFor` in `routes.ts`): the title card uses "Dali Sandic — Cinematographer & Visual Storyteller", and every other view names what it shows, such as "Vlaska Teaser — Dali Sandic", "About — Dali Sandic" or a journal post's title, so tabs, history and bookmarks are distinguishable.
+
+Shared links get a preview: `index.html` carries Open Graph and Twitter card tags with the site title, the page description and the showreel's 1280x720 frame as the image.
+
 ## 8. Scene
 
 Coordinate frame: camera at the origin in browse mode, looking along -Z. Ring radius 6 units. Tiles are 16:9 planes, 2.2 by 1.2375 units, pinned to the inside of a cylinder of that radius, each rotated to face the origin.
@@ -202,6 +206,7 @@ Visuals per tile:
 
 - Base: thumbnail texture on `MeshBasicMaterial`, colour tint 0.75 when not focused.
 - Focused: scale 1.25, tint 1.0, gold edge (a thin plane behind the tile, 2% larger, gold colour), bloom picks it up.
+- Shadow: a black plane at 55% behind each tile, 4% larger and offset downward. It follows the tile's scale spring, so a tile growing in never shows a larger fixed dark box around it.
 - Hovered (desktop): scale 1.08, tint 0.9, cursor pointer.
 - Transitions via react-spring, tension 120, friction 24, so the focus scale and gold edge arrive with the ring's settle.
 
@@ -243,7 +248,7 @@ All overlays are HTML positioned over the canvas, using the tokens in section 10
   - Services: four services as title plus description, then the four-phase process (Discovery, Pre-production, Production, Delivery) as a numbered list.
   - Journal: list of posts sorted by date descending showing title, date, reading time, excerpt. Clicking opens the post in the same panel with a back link. Body rendered from markdown, headings in Bebas Neue, links gold.
   - Contact: large mailto button with the email, then phone as a tel link, location, availability with the pulsing gold dot, and the three social links opening in new tabs.
-- **Player**: fixed full-screen, black at 95%, YouTube iframe with `autoplay=1&rel=0&modestbranding=1&color=white`, 16:9 box capped at 90vw by 85vh, close button, Escape and scrim click close. Ring behind stops idling and rendering is throttled to 10 fps while open.
+- **Player**: fixed full-screen, black at 95%, YouTube iframe from the privacy-enhanced `youtube-nocookie.com` domain, which sets no tracking cookies until the viewer plays, with `autoplay=1&rel=0&modestbranding=1&color=white`, 16:9 box capped at 90vw by 85vh, close button, Escape and scrim click close. Ring behind stops idling and rendering is throttled to 10 fps while open.
 - **Grid2D**: shown instead of the canvas when `webgl` is false. Responsive grid of thumbnails with title and category, respecting the filter, clicking plays. Same Nav, Filter, Panel, Player. The Intro is skipped.
 - **Grain**: full-screen overlay, pointer-events none, above the canvas and below the overlays.
 

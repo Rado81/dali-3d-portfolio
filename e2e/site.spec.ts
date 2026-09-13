@@ -10,6 +10,7 @@ test("intro, enter, step, play, panel, escape", async ({ page }) => {
   await page.keyboard.press("ArrowRight");
   await expect(page.getByRole("heading", { name: "Lifestyle Mix Commercials" })).toBeVisible();
   await expect(page.getByText("Piece 2 of 12")).toBeAttached(); // the position counter, as announced
+  await expect(page).toHaveTitle("Lifestyle Mix Commercials — Dali Sandic");
 
   await page.keyboard.press("Enter");
   await expect(page.locator("iframe[title='Lifestyle Mix Commercials']")).toBeVisible();
