@@ -36,7 +36,7 @@ export function Nav() {
 
   return (
     <header className="nav">
-      <a className="nav__brand" href="#/work">Sandic</a>
+      <a className="nav__brand" href="#/" aria-label="Sandic — home">Sandic</a>
       <ul className="nav__links">{items}</ul>
       <button className="nav__burger" aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} onClick={() => setOpen((o) => !o)}>
         <span /><span />

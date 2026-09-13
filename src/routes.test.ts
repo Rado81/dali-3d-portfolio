@@ -66,6 +66,24 @@ test("empty hash keeps intro on a fresh load", () => {
   expect(useStore.getState().mode).toBe("intro");
 });
 
+test("the root hash returns to the title card from browse and from a panel", () => {
+  useStore.getState().enter();
+  applyHash("#/");
+  expect(useStore.getState().mode).toBe("intro");
+
+  useStore.getState().openPanel("about");
+  applyHash("#/");
+  expect(useStore.getState().mode).toBe("intro");
+  expect(useStore.getState().panel).toBeNull();
+});
+
+test("the root hash browses instead when there is no WebGL", () => {
+  useStore.getState().setWebgl(false);
+  useStore.getState().openPanel("about");
+  applyHash("#/");
+  expect(useStore.getState().mode).toBe("browse");
+});
+
 test("initRouting mirrors store changes into the hash and back", async () => {
   const stop = initRouting();
   useStore.getState().enter();
@@ -101,7 +119,7 @@ test("ring stepping replaces the hash without a history entry; structural change
   stop();
 });
 
-test("Watch Reel from the intro survives the hash echo and closes back to the intro", async () => {
+test("the showreel played from the intro survives the hash echo and closes back to the intro", async () => {
   const stop = initRouting();
   useStore.getState().play("5RXfPmbynlk");
   expect(window.location.hash).toBe("#/play/dali-showreel");

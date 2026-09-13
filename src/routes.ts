@@ -44,7 +44,7 @@ export function applyHash(hash: string): void {
   const store = useStore.getState();
 
   if (parts.length === 0) {
-    if (store.mode !== "intro") useStore.setState({ mode: "browse", panel: null, journalSlug: null, playingId: null });
+    store.showIntro();
     return;
   }
 

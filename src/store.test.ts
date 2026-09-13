@@ -17,6 +17,33 @@ test("enter moves to browse; startBrowsing is a no-op outside intro", () => {
   expect(useStore.getState().mode).toBe("panel");
 });
 
+test("showIntro returns to the title card from anywhere and clears the panel and player", () => {
+  useStore.getState().enter();
+  useStore.getState().openPanel("about");
+  useStore.getState().showIntro();
+  let s = useStore.getState();
+  expect(s.mode).toBe("intro");
+  expect(s.panel).toBeNull();
+  expect(s.journalSlug).toBeNull();
+  expect(s.returnMode).toBe("intro");
+
+  useStore.getState().play("5RXfPmbynlk");
+  useStore.getState().showIntro();
+  s = useStore.getState();
+  expect(s.mode).toBe("intro");
+  expect(s.playingId).toBeNull();
+});
+
+test("without WebGL showIntro browses instead, since the 2D grid has no title card", () => {
+  useStore.getState().setWebgl(false);
+  useStore.getState().openPanel("contact");
+  useStore.getState().showIntro();
+  const s = useStore.getState();
+  expect(s.mode).toBe("browse");
+  expect(s.returnMode).toBe("browse");
+  expect(s.panel).toBeNull();
+});
+
 test("focus wraps around the filtered list and step moves by one", () => {
   const s = useStore.getState();
   s.focus(12);

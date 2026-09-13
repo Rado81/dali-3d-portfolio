@@ -19,6 +19,7 @@ export interface AppState {
 
   enter(): void;
   startBrowsing(): void;
+  showIntro(): void;
   focus(i: number): void;
   step(delta: 1 | -1): void;
   setFilter(f: FilterId): void;
@@ -50,6 +51,17 @@ export const useStore = create<AppState>()((set, get) => ({
   enter: () => set({ mode: "browse", returnMode: "browse" }),
   startBrowsing: () => {
     if (get().mode === "intro") set({ mode: "browse", returnMode: "browse" });
+  },
+  // the wordmark's destination: back out to the title card, or to the grid where there is no scene
+  showIntro: () => {
+    const intro = get().webgl;
+    set({
+      mode: intro ? "intro" : "browse",
+      returnMode: intro ? "intro" : "browse",
+      panel: null,
+      journalSlug: null,
+      playingId: null,
+    });
   },
   focus: (i) => {
     const n = filterProjects(get().filter).length;
