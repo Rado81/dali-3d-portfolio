@@ -20,6 +20,11 @@ export function prefersReducedMotion(): boolean {
   return typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+/** Bloom and the composer run on desktop only: phones skip the cost, and reduced motion skips the glow. */
+export function hasPostprocessing(isMobile: boolean, reducedMotion: boolean): boolean {
+  return !isMobile && !reducedMotion;
+}
+
 export function fpsForMode(mode: Mode): "always" | number {
   switch (mode) {
     case "intro":

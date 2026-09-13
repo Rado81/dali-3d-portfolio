@@ -1,4 +1,4 @@
-import { detectWebGL, isMobileViewport, fpsForMode, initDevice } from "./device";
+import { detectWebGL, hasPostprocessing, isMobileViewport, fpsForMode, initDevice } from "./device";
 import { useStore, resetStore } from "./store";
 
 test("detectWebGL is false when no context can be created", () => {
@@ -47,4 +47,10 @@ test("initDevice without WebGL sets webgl false and skips the intro", () => {
   expect(useStore.getState().webgl).toBe(false);
   expect(useStore.getState().mode).toBe("browse");
   HTMLCanvasElement.prototype.getContext = original;
+});
+
+test("post-processing runs on desktop only, and never under reduced motion", () => {
+  expect(hasPostprocessing(false, false)).toBe(true);
+  expect(hasPostprocessing(true, false)).toBe(false);
+  expect(hasPostprocessing(false, true)).toBe(false);
 });

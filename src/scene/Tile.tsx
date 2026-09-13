@@ -6,6 +6,7 @@ import { Color, type MeshBasicMaterial } from "three";
 import type { Project } from "../content/projects";
 import { useStore } from "../store";
 import { slotPosition, slotRotationY, TILE_H, TILE_W, type TileSlot } from "./layout";
+import { Spill } from "./Spill";
 import { useThumbnail } from "./useThumbnail";
 import { CLICK_MAX_PX } from "./ringPhysics";
 
@@ -68,11 +69,13 @@ export function Tile({ slot, project, focused, dim, fullRes, onSelect }: TilePro
         <planeGeometry args={[TILE_W, TILE_H]} />
         <animated.meshBasicMaterial color={HDR_GOLD} transparent opacity={edge} toneMapped={false} />
       </animated.mesh>
-      {/* the shadow scales with the tile, so a tile growing in does not show a fixed dark box around it */}
+      {/* the shadow scales with the tile, so a tile growing in does not show a fixed dark box around it;
+          lighter than it was on plain black, since the spill behind it now does most of the separating */}
       <animated.mesh position-y={scale.to((s) => -0.08 * s)} position-z={-0.05} scale={scale.to((s) => s * 1.04)}>
         <planeGeometry args={[TILE_W, TILE_H]} />
-        <meshBasicMaterial color="#000000" transparent opacity={0.55} />
+        <meshBasicMaterial color="#000000" transparent opacity={0.4} />
       </animated.mesh>
+      <Spill scale={scale} tint={tintValue} />
     </group>
   );
 }

@@ -9,9 +9,9 @@
   --gold-subtle: rgba(212, 175, 55, 0.08);
   --text-primary: #f5f5f5;
   --text-secondary: #aaaaaa;
-  --text-muted: #7a7a7a;
+  --text-muted: #808080; /* 4.5:1 over the haze at its brightest, see src/scene/hazeParams.ts */
   --text-subtle: #333333; /* decorative dividers only */
-  --control-idle: #5e5e5e; /* outlines and marks of resting controls, 3:1 on the stage */
+  --control-idle: #6a6a6a; /* outlines and marks of resting controls, 3:1 over the haze at its brightest */
   --font-sans: "Inter", system-ui, sans-serif;
   --font-display: "Bebas Neue", "Inter", sans-serif;
   --tracking-display: 0.25em;

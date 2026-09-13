@@ -11,7 +11,7 @@ The site replaces nothing yet. It is a new project in a new repository, deployed
 
 ## 2. Experience summary
 
-- The whole site is one WebGL scene: a curved ring of 12 video tiles wrapping the camera, on a near-black stage with a gold accent.
+- The whole site is one WebGL scene: a curved ring of 12 video tiles wrapping the camera, on a near-black stage in a slow dark haze that the screens light, with a gold accent.
 - Visitors arrive on a title card (a play circle, name, tagline, Enter) over a dim, slowly turning ring. The play circle opens the showreel; Enter flies the camera into the ring.
 - In the ring, drag or wheel spins it. One tile is always in focus, scaled up with a gold edge. Its title, category, and a Play button sit beneath it. Clicking plays the piece in a full-screen YouTube player overlay.
 - About, Services, Journal, and Contact are slide-in panels over the ring. The ring dims behind them and keeps idling.
@@ -206,15 +206,17 @@ Visuals per tile:
 
 - Base: thumbnail texture on `MeshBasicMaterial`, colour tint 0.75 when not focused.
 - Focused: scale 1.25, tint 1.0, gold edge (a thin plane behind the tile, 2% larger, gold colour), bloom picks it up.
-- Shadow: a black plane at 55% behind each tile, 4% larger and offset downward. It follows the tile's scale spring, so a tile growing in never shows a larger fixed dark box around it.
+- Shadow: a black plane at 40% behind each tile, 4% larger and offset downward. It follows the tile's scale spring, so a tile growing in never shows a larger fixed dark box around it. It was 55% on plain black; the spill behind it now does most of the separating.
 - Hovered (desktop): scale 1.08, tint 0.9, cursor pointer.
 - Transitions via react-spring, tension 120, friction 24, so the focus scale and gold edge arrive with the ring's settle.
 
 Stage:
 
 - Background `#050505`. Fog `#050505` from 7 to 14 units: in browse every tile sits 6 units from the camera and is unfogged; from the intro camera the far wall of the ring (10 to 13.5 units away) fades with distance.
+- Haze (`Haze.tsx`, parameters in `hazeParams.ts`): the screening room's air. A fullscreen quad drawn first, without depth, fog or tone mapping, running a three-octave value-noise field (two on phones) from the stage colour up to a warm peak of `#181614`, weighted by a vertical profile that is full at the ring's horizon and 0.4 at the top and bottom edges. The profile is baked in TypeScript into a one-row lookup the shader samples, so it is tested rather than duplicated in GLSL. The noise drifts sideways at 0.03 units per second across 1.6 cycles of screen width, so a shape takes about 53 s to cross, and changes along a third noise axis at 0.02 per second. A frame longer than 100 ms (the tab was hidden) moves it on by 100 ms. Half a level of dither breaks the banding of the slow gradient, scaled for the composer's linear buffer on desktop and the 8-bit screen on phones.
+- Spill (`Spill.tsx`, parameters in `spillParams.ts`): the light each screen throws into the haze. A plane behind every tile, 2.4 tile widths by 3.2 tile heights, carrying a radial `(1 - d²)²` falloff as alpha, additive, in one warm tone `#d9c9a3` for every tile, and out of tone mapping like the gold edge. Its opacity is 0.12 × tint², so the focused tile lights the most and a dimmed room goes quiet, and it follows the tile's scale spring.
 - Tiles use an unlit `MeshBasicMaterial` (map times a tint colour), so the tint values below are exact and no scene lights are needed. The gold edge plane is gold scaled by 1.5 (an HDR value) so bloom picks it up.
-- Post-processing: bloom (threshold 0.85, intensity 0.6). In `intro` and `panel` modes, a CSS `filter: blur(6px)` on the canvas element and tile tint dropped to 0.45.
+- Post-processing: bloom (threshold 0.85, intensity 0.6). In `intro` and `panel` modes, a CSS `filter: blur(6px)` on the canvas element and tile tint dropped to 0.45. The composer turns the renderer's tone mapping off while it runs, so on desktop nothing is tone mapped; on phones and under reduced motion there is no composer and react-three-fiber's default filmic curve applies to the tiles, which crushes dark values, so the haze and the spill opt out of it (`hasPostprocessing` in `device.ts` is the single decision).
 - Film grain is an HTML overlay (SVG turbulence, opacity 0.4, overlay blend), not a shader pass.
 
 Camera:
@@ -261,9 +263,9 @@ Lifted from the current site's stylesheet.
   --bg-deep: #050505;   --bg-base: #0A0A0A;  --bg-surface: #111111;  --bg-elevated: #1A1A1A;
   --gold: #D4AF37;      --gold-dark: #B8962E;
   --gold-glow: rgba(212,175,55,.15);   --gold-subtle: rgba(212,175,55,.08);
-  --text-primary: #F5F5F5;  --text-secondary: #AAAAAA;  --text-muted: #7A7A7A;
+  --text-primary: #F5F5F5;  --text-secondary: #AAAAAA;  --text-muted: #808080;
   --text-subtle: #333333;   /* decorative dividers only */
-  --control-idle: #5E5E5E;  /* outlines and marks of resting controls */
+  --control-idle: #6A6A6A;  /* outlines and marks of resting controls */
   --font-sans: "Inter", system-ui, sans-serif;
   --font-display: "Bebas Neue", "Inter", sans-serif;
   --tracking-display: .25em;  --tracking-wide: .15em;  --tracking-label: .2em;
@@ -272,7 +274,7 @@ Lifted from the current site's stylesheet.
 
 Fonts load from Google Fonts with `display=swap` and system fallbacks. Selection colour is gold at 30%.
 
-`--text-muted` was `#666666` on the original site, which is only 3.5:1 on the stage; it is raised to `#7A7A7A` (4.7:1). `--text-subtle` stays for decorative dividers, and resting controls use `--control-idle` (3.1:1) so their outlines and dots stay visible. `src/tokens.test.ts` computes the WCAG ratios from the stylesheet and fails if a token drops below its threshold.
+`--text-muted` was `#666666` on the original site, which is only 3.5:1 on the stage; it was first raised to `#7A7A7A` (4.7:1). `--text-subtle` stays for decorative dividers, and resting controls use `--control-idle` so their outlines and dots stay visible. With the haze, the stage is no longer a flat `#050505`: `--text-muted` is `#808080` and `--control-idle` `#6A6A6A` so both keep their ratios over the haze at its brightest (`HAZE_PEAK`, `#181614`). `src/tokens.test.ts` computes the WCAG ratios from the stylesheet against both surfaces and the haze peak, and fails if a token drops below its threshold.
 
 ## 11. Mobile and performance
 
@@ -295,7 +297,7 @@ Fonts load from Google Fonts with `display=swap` and system fallbacks. Selection
 | `maxresdefault` 404 or error | Retry with `hqdefault`, then keep the preview, then placeholder with title |
 | YouTube iframe fails or blocked | An "Open on YouTube" link is always shown under the player, so the piece stays reachable |
 | Unknown hash slug or panel | Redirect to `#/work` |
-| `prefers-reduced-motion` | Camera fly-in becomes a 300 ms fade, idle rotation off, inertia off, drag steps one tile per gesture, bloom off |
+| `prefers-reduced-motion` | Camera fly-in becomes a 300 ms fade, idle rotation off, inertia off, drag steps one tile per gesture, bloom off, haze frozen in place |
 | Journal file with bad frontmatter | Build fails with the filename in the error |
 
 ## 13. Accessibility
@@ -311,7 +313,7 @@ Fonts load from Google Fonts with `display=swap` and system fallbacks. Selection
 
 - **Unit (vitest)**: `layout.ts` angles and nearest-index for N in {1, 3, 4, 5, 12} and both row modes; drag velocity decay, snap target, wraparound at 2π; hash to state and state to hash for every route in section 7; journal frontmatter parsing and date sort; slug derivation and uniqueness for the 12 projects.
 - **Component (vitest + Testing Library)**: Intro, Nav, Filter, Caption, Panel bodies, Player, Grid2D against a mocked store. Asserts on labels, active states, Escape handling, focus trap, and mailto and tel hrefs.
-- **End to end (Playwright)**: against the production build in headless Chromium with WebGL enabled. Load root, see Intro, click Enter, see caption "Dali Showreel", press Right, caption changes, click Play, iframe appears, Escape, open About via nav, panel visible, Escape, hash returns to `#/work`. A second test loads `#/about` directly and asserts the panel is open with no intro. A third forces WebGL off and asserts Grid2D. A separate `dev` project runs the same browser against `npm run dev`, because React's StrictMode only runs there, and checks that the ring survives it without losing its WebGL context.
+- **End to end (Playwright)**: against the production build in headless Chromium with WebGL enabled. Load root, see Intro, click Enter, see caption "Dali Showreel", press Right, caption changes, click Play, iframe appears, Escape, open About via nav, panel visible, Escape, hash returns to `#/work`. A second test loads `#/about` directly and asserts the panel is open with no intro. A third forces WebGL off and asserts Grid2D. A separate `dev` project runs the same browser against `npm run dev`, because React's StrictMode only runs there, and checks that the ring survives it without losing its WebGL context. A haze probe (`e2e/haze.spec.ts`) decodes screenshots with a small PNG reader (`e2e/png.ts`) and checks that the bands above and below the ring average between 8 and 40 of 255, that the title card sits in the same haze, that the band changes over three seconds, and that it does not change at all under reduced motion.
 - No visual regression tooling. The ring is reviewed by eye via screenshots during implementation.
 
 ## 15. Deployment

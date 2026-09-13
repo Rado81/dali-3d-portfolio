@@ -1,4 +1,5 @@
 import tokens from "./tokens.css?raw";
+import { HAZE_PEAK } from "./scene/hazeParams";
 
 // WCAG 2.x relative luminance and contrast ratio
 function token(name: string): string {
@@ -25,6 +26,16 @@ test.each(["text-primary", "text-secondary", "text-muted", "gold"])("--%s reads 
 
 test("--control-idle outlines resting controls visibly on every surface (3:1)", () => {
   for (const surface of SURFACES) expect(contrast(token("control-idle"), token(surface))).toBeGreaterThanOrEqual(3);
+});
+
+// The haze behind the ring lifts the stage above --bg-deep, and the overlays sit on it directly.
+// Its brightest patches are HAZE_PEAK, so every token used over the stage is checked against that too.
+test.each(["text-primary", "text-secondary", "text-muted", "gold"])("--%s stays readable over the haze at its brightest (4.5:1)", (name) => {
+  expect(contrast(token(name), HAZE_PEAK)).toBeGreaterThanOrEqual(4.5);
+});
+
+test("--control-idle still outlines resting controls over the haze at its brightest (3:1)", () => {
+  expect(contrast(token("control-idle"), HAZE_PEAK)).toBeGreaterThanOrEqual(3);
 });
 
 test("the contrast maths matches known WCAG values", () => {
