@@ -1,27 +1,22 @@
 import { useFrame, useThree } from "@react-three/fiber";
 import { useSpring } from "@react-spring/three";
 import { useStore } from "../store";
-import { layoutRing, RING_RADIUS } from "./layout";
-import { filterProjects } from "../content/projects";
+import { RING_RADIUS } from "./layout";
 
 const INTRO_POS: [number, number, number] = [0, 1.2, 7.5];
 const INTRO_LOOK: [number, number, number] = [0, 0, 0];
+const BROWSE_LOOK: [number, number, number] = [0, 0, -RING_RADIUS];
 
 export function CameraRig() {
   const camera = useThree((s) => s.camera);
   const mode = useStore((s) => s.mode);
-  const focusedIndex = useStore((s) => s.focusedIndex);
-  const filter = useStore((s) => s.filter);
-  const isMobile = useStore((s) => s.isMobile);
   const reducedMotion = useStore((s) => s.reducedMotion);
 
-  const count = filterProjects(filter).length;
-  const rowY = layoutRing(count, isMobile ? 1 : 2)[focusedIndex]?.y ?? 0;
   const inside = mode !== "intro";
 
   const { pos, look } = useSpring({
     pos: inside ? [0, 0, 0] : INTRO_POS,
-    look: inside ? [0, rowY, -RING_RADIUS] : INTRO_LOOK,
+    look: inside ? BROWSE_LOOK : INTRO_LOOK,
     config: { tension: 120, friction: 30 },
     immediate: reducedMotion,
   });

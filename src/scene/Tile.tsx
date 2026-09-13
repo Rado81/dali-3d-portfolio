@@ -29,7 +29,7 @@ export function Tile({ slot, project, focused, dim, onSelect }: TileProps) {
   const { scale, tintValue, edge } = useSpring({
     from: { scale: 0, tintValue: 0.45, edge: 0 },
     to: { scale: focused ? 1.25 : hovered ? 1.08 : 1, tintValue: tint, edge: focused ? 1 : 0 },
-    config: { tension: 170, friction: 26 },
+    config: { tension: 120, friction: 24 }, // arrives with the ring's spring rather than ahead of it
     immediate: reducedMotion,
   });
 

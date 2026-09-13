@@ -25,7 +25,8 @@ export interface RingStepOutput {
 
 /**
  * One frame of ring motion, as a pure function: idle rotation in intro and panel,
- * re-targeting when the focus or the slots change, inertia and snap in browse.
+ * re-targeting when the focus or the slots change, fling projection and spring settle in browse
+ * (an instant cut under reduced motion).
  * `useRingDrag` owns the refs and the listeners; this owns the decisions.
  */
 export function stepRing(input: RingStepInput): RingStepOutput {
@@ -44,17 +45,21 @@ export function stepRing(input: RingStepInput): RingStepOutput {
   if (focusedIndex >= slots.length) return { motion, lastFocused, focusToWrite: null };
 
   if (focusedIndex !== lastFocused) {
-    motion = { ...motion, velocity: 0, target: rotationFor(focusedIndex, slots, motion.rotation) };
+    // keep the velocity: a step while the ring is still moving blends instead of braking
+    motion = { ...motion, target: rotationFor(focusedIndex, slots, motion.rotation) };
     lastFocused = focusedIndex;
   }
 
   if (dragging) return { motion, lastFocused, focusToWrite: null };
 
   const wasSettled = isSettled(motion);
-  motion = integrate(motion, dtMs, (r) => {
-    const idx = nearestIndex(r, slots, slots[focusedIndex]?.row);
-    return rotationFor(idx, slots, r);
-  });
+  const snapTargetFor = (r: number) => rotationFor(nearestIndex(r, slots), slots, r);
+  if (reducedMotion) {
+    const target = motion.target ?? snapTargetFor(motion.rotation);
+    motion = { rotation: target, velocity: 0, target };
+  } else {
+    motion = integrate(motion, dtMs, snapTargetFor);
+  }
 
   let focusToWrite: number | null = null;
   if (!wasSettled && isSettled(motion)) {

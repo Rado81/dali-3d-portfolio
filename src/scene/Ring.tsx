@@ -8,12 +8,11 @@ import { useRingDrag } from "./useRingDrag";
 
 export function Ring() {
   const filter = useStore((s) => s.filter);
-  const isMobile = useStore((s) => s.isMobile);
   const mode = useStore((s) => s.mode);
   const focusedIndex = useStore((s) => s.focusedIndex);
 
   const projects = useMemo(() => filterProjects(filter), [filter]);
-  const slots = useMemo(() => layoutRing(projects.length, isMobile ? 1 : 2), [projects.length, isMobile]);
+  const slots = useMemo(() => layoutRing(projects.length, 1), [projects.length]);
   const group = useRef<Group>(null);
   useRingDrag(group, slots);
 
