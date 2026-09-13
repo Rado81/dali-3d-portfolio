@@ -13,6 +13,9 @@ import { stepRing } from "./ringStep";
 const WHEEL_UNITS = [1, 40, 800];
 /** A pointer that has been still this long before lifting carries no momentum. */
 const STILL_BEFORE_UP_MS = 80;
+// Timing comes from each event's timeStamp, when the finger actually moved, rather than from when the
+// handler runs. A phone busy decoding thumbnails delivers moves in bursts a millisecond apart, and timed
+// on arrival those read as a violent flick that threw the ring several tiles.
 
 /**
  * Drives `group.rotation.y` from pointer, wheel and keyboard state.
@@ -51,7 +54,7 @@ export function useRingDrag(group: RefObject<Group | null>, slots: TileSlot[]): 
       dragging.current = true;
       startX = lastX = e.clientX;
       startY = e.clientY;
-      startT = lastT = performance.now();
+      startT = lastT = e.timeStamp;
       try {
         el.setPointerCapture(e.pointerId);
       } catch {
@@ -60,7 +63,7 @@ export function useRingDrag(group: RefObject<Group | null>, slots: TileSlot[]): 
     };
     const onMove = (e: PointerEvent) => {
       if (!dragging.current) return;
-      const now = performance.now();
+      const now = e.timeStamp;
       const dx = e.clientX - lastX;
       const dt = now - lastT;
       lastX = e.clientX;
@@ -72,7 +75,7 @@ export function useRingDrag(group: RefObject<Group | null>, slots: TileSlot[]): 
       if (!dragging.current) return;
       dragging.current = false;
       if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
-      const now = performance.now();
+      const now = e.timeStamp;
       const dist = Math.hypot(e.clientX - startX, e.clientY - startY);
       const dur = now - startT;
       if (isClick(dist, dur)) {
@@ -101,7 +104,7 @@ export function useRingDrag(group: RefObject<Group | null>, slots: TileSlot[]): 
         return;
       }
       // trackpad: the ring follows the scroll 1:1 and settles once the events stop
-      const now = performance.now();
+      const now = e.timeStamp;
       const dt = scrolling.current ? now - lastWheelT : 0;
       lastWheelT = now;
       scrolling.current = true;
