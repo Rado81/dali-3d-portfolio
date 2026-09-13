@@ -3,6 +3,7 @@ import { Intro } from "./Intro";
 import { Nav } from "./Nav";
 import { Filter } from "./Filter";
 import { Caption } from "./Caption";
+import { Pager } from "./Pager";
 import { Panel } from "./Panel";
 import { Player } from "./Player";
 import { Grain } from "./Grain";
@@ -24,6 +25,7 @@ export function Overlay() {
       {showNav && <Nav />}
       {mode === "browse" && <Filter />}
       {mode === "browse" && webgl && <Caption />}
+      {mode === "browse" && webgl && <Pager />}
       {mode === "panel" && <Panel />}
       {mode === "watching" && <Player />}
     </>
