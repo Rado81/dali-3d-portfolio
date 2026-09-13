@@ -25,8 +25,12 @@ export function Overlay() {
       {mode !== "intro" && <h1 className="visually-hidden">{site.name}</h1>}
       {mode === "intro" && <Intro />}
       {showNav && <Nav />}
-      {mode === "browse" && <Filter />}
-      {mode === "browse" && webgl && <Caption />}
+      {mode === "browse" && (
+        <div className="topstack">
+          <Filter />
+          {webgl && <Caption />}
+        </div>
+      )}
       {mode === "browse" && webgl && <Pager />}
       {mode === "panel" && <Panel />}
       {mode === "watching" && <Player />}

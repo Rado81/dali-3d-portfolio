@@ -66,7 +66,7 @@ test("slot position and facing", () => {
 });
 
 test("the focused tile's top edge is where the caption CSS centres against", () => {
-  // `--tiles-top` in overlay.css positions the caption in the gap above the ring. It is derived
+  // `.topstack` in overlay.css ends 61.2% from the bottom, at this edge, so the caption sits in the gap above the ring. It is derived
   // from these numbers, so if a tile or the camera changes, this fails and the CSS needs the new value.
   const FOCUSED_SCALE = 1.25; // Tile.tsx
   const FOV_DEG = 60; // Stage.tsx

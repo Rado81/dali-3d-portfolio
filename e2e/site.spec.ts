@@ -112,3 +112,24 @@ test("controls are big enough to hit and keyboard focus never disappears", async
   await link.focus();
   expect((await link.boundingBox())!.width).toBeGreaterThan(100);
 });
+
+for (const [label, width, height] of [
+  ["desktop", 1440, 900],
+  ["portrait phone", 390, 844],
+  ["landscape phone", 844, 390],
+  ["small landscape phone", 667, 375],
+] as const) {
+  test(`the caption sits clear of the filter and the videos on a ${label}`, async ({ page }) => {
+    await page.setViewportSize({ width, height });
+    await page.goto("/#/work");
+    await page.waitForSelector("canvas[data-ring-ready]");
+    const chips = await page.getByRole("button", { name: /^(all|showreel|commercial|narrative|aerial)$/i }).evaluateAll(
+      (els) => Math.max(...els.map((e) => e.getBoundingClientRect().bottom)),
+    );
+    const title = (await page.getByRole("heading", { level: 2 }).boundingBox())!;
+    const category = (await page.locator(".caption__category").boundingBox())!;
+    const tileTop = height * 0.388; // the focused tile's top edge; see layout.test.ts
+    expect(title.y, "title below the filter chips").toBeGreaterThanOrEqual(chips);
+    expect(category.y + category.height, "caption above the focused video").toBeLessThanOrEqual(tileTop);
+  });
+}
