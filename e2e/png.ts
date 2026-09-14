@@ -98,3 +98,16 @@ export function meanAbsDiff(a: Png, b: Png, r: Region): number {
   }
   return n ? sum / n : 0;
 }
+
+function channel(v: number): number {
+  const c = v / 255;
+  return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+}
+
+/** WCAG relative luminance over the region at a percentile from 0 to 1; a high one ignores grain and dither specks. */
+export function luminanceAt(png: Png, r: Region, percentile: number): number {
+  const values: number[] = [];
+  for (const i of pixels(png, r)) values.push(0.2126 * channel(png.data[i]) + 0.7152 * channel(png.data[i + 1]) + 0.0722 * channel(png.data[i + 2]));
+  values.sort((a, b) => a - b);
+  return values[Math.min(values.length - 1, Math.floor(percentile * values.length))];
+}

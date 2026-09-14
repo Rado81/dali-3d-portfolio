@@ -2,6 +2,7 @@ import { CameraRig } from "./CameraRig";
 import { Effects } from "./Effects";
 import { Floor } from "./Floor";
 import { Haze } from "./Haze";
+import { ProjectorBeam } from "./ProjectorBeam";
 import { Ring } from "./Ring";
 
 export function Scene() {
@@ -12,6 +13,8 @@ export function Scene() {
       <Floor />
       <Ring />
       <CameraRig />
+      {/* after the camera rig, so the beam is marched from this frame's camera */}
+      <ProjectorBeam />
       <Effects />
     </>
   );
