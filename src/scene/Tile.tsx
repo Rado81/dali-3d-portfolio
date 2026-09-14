@@ -6,6 +6,7 @@ import { Color, type MeshBasicMaterial } from "three";
 import type { Project } from "../content/projects";
 import { useStore } from "../store";
 import { slotPosition, slotRotationY, TILE_H, TILE_W, type TileSlot } from "./layout";
+import { Reflection } from "./Reflection";
 import { Spill } from "./Spill";
 import { useThumbnail } from "./useThumbnail";
 import { CLICK_MAX_PX } from "./ringPhysics";
@@ -76,6 +77,7 @@ export function Tile({ slot, project, focused, dim, fullRes, onSelect }: TilePro
         <meshBasicMaterial color="#000000" transparent opacity={0.4} />
       </animated.mesh>
       <Spill scale={scale} tint={tintValue} />
+      {texture && <Reflection texture={texture} scale={scale} tint={tintValue} slotY={slot.y} />}
     </group>
   );
 }

@@ -3,16 +3,11 @@ import { useFrame } from "@react-three/fiber";
 import { Color, ShaderMaterial } from "three";
 import { hasPostprocessing } from "../device";
 import { useStore } from "../store";
+import { outputDither } from "./dither";
 import {
   HAZE_DARK, HAZE_DRIFT_PER_S, HAZE_EVOLVE_PER_S, HAZE_PEAK, HAZE_SCALE,
   hazeOctaves, hazeProfileTexture, hazeTime,
 } from "./hazeParams";
-
-// Dither of about half an output level breaks the banding a slow dark gradient would otherwise show.
-// Straight to the screen that is half of 1/255; through the composer the frame is still linear when the
-// haze is drawn and is encoded later, where one output level in the darks is roughly a tenth of that.
-const DITHER_SCREEN = 1 / 255;
-const DITHER_LINEAR = 1 / 2550;
 
 const vertexShader = /* glsl */ `
 varying vec2 vUv;
@@ -93,7 +88,7 @@ export function Haze() {
         uniforms: {
           uTime: { value: 0 },
           uAspect: { value: 1 },
-          uDither: { value: composer ? DITHER_LINEAR : DITHER_SCREEN },
+          uDither: { value: outputDither(composer) },
           uScale: { value: HAZE_SCALE },
           uDrift: { value: HAZE_DRIFT_PER_S },
           uEvolve: { value: HAZE_EVOLVE_PER_S },
